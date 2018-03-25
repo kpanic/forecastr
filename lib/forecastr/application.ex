@@ -5,7 +5,7 @@ defmodule Forecastr.Application do
 
   def start(_type, _args) do
     children = [
-      {Forecastr.Cache, []},
+      {Forecastr.Cache, []}
     ]
 
     opts = [strategy: :one_for_one, name: Forecastr.Supervisor]

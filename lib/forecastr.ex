@@ -26,13 +26,14 @@ defmodule Forecastr do
     case Forecastr.Cache.get(query) do
       nil ->
         backend = Application.get_env(:forecastr, :backend)
-        with {:ok, response} <-  backend.weather(when_to_forecast, query,  params),
-             expiration_minutes = Application.fetch_env!(:forecastr, :ttl)
-        do
+
+        with {:ok, response} <- backend.weather(when_to_forecast, query, params),
+             expiration_minutes = Application.fetch_env!(:forecastr, :ttl) do
           :ok = Forecastr.Cache.set(query, response, ttl: expiration_minutes)
 
           response
         end
+
       response ->
         response
     end

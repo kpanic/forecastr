@@ -3,7 +3,7 @@ defmodule Forecastr.Cache do
 
   # Client API
   def start_link(_) do
-    GenServer.start_link(__MODULE__, %{}, [name: __MODULE__])
+    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
   def get(query) do
