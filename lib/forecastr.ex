@@ -19,11 +19,14 @@ defmodule Forecastr do
 
   @spec forecast(atom(), String.t(), list()) :: {:ok, map()} | {:error, atom()}
   def forecast(when_to_forecast, query, params \\ %{units: :metric}) do
+    renderer = Application.get_env(:forecastr, :renderer)
     query = String.downcase(query)
+
+    # TODO: distinguish between :today and :in_five_days cache
     case Forecastr.Cache.get(query) do
       nil ->
         backend = Application.get_env(:forecastr, :backend)
-        with {:ok, response = %HTTPoison.Response{status_code: 200}} <-  backend.weather(when_to_forecast, query,  params),
+        with {:ok, response} <-  backend.weather(when_to_forecast, query,  params),
              expiration_minutes = Application.fetch_env!(:forecastr, :ttl)
         do
           :ok = Forecastr.Cache.set(query, response, ttl: expiration_minutes)
@@ -33,5 +36,6 @@ defmodule Forecastr do
       response ->
         response
     end
+    |> renderer.render()
   end
 end

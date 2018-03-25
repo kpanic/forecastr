@@ -20,7 +20,9 @@ defmodule Forecastr.MixProject do
 
   defp deps do
     [
-      {:httpoison, "~> 1.0"}
+      {:httpoison, "~> 1.0"},
+      {:poison, "~> 3.1"},
+      {:table, "~> 0.0.5"}
     ]
   end
 end

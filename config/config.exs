@@ -32,5 +32,6 @@ use Mix.Config
 config :forecastr,
   appid: System.get_env("OWM_API_KEY"),
   backend: Forecastr.OWM,
+  renderer: Forecastr.Renderer.ASCII,
   # 10 minutes by default per OWM policy
   ttl: 10 * 60_000
