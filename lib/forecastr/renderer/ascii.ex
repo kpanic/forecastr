@@ -6,7 +6,7 @@ defmodule Forecastr.Renderer.ASCII do
     IO.puts ~s(Weather report: #{name}, #{country})
     IO.puts ~s(lat: #{lat}, lon: #{lon})
     IO.puts ""
-    IO.puts box(description, temp, temp_max, temp_min)
+    IO.write(Table.table([box(description, temp, temp_max, temp_min)], :unicode))
   end
 
   def render(%{"city" => %{"name" => name, "country" => country, "coord" => %{"lat" => lat, "lon" => lon}}, "list" => list}) when is_list(list) do
