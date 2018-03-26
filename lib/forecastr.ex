@@ -19,25 +19,38 @@ defmodule Forecastr do
 
   @type when_to_forecast :: :today | :in_five_days
   @type response :: map()
-  @type query :: String.t()
-
-  @spec forecast(when_to_forecast, query, map()) :: String.t()
+  @spec forecast(when_to_forecast, String.t(), list()) :: {:ok, map()} | {:error, atom()}
   def forecast(when_to_forecast, query, params \\ %{units: :metric}) do
-    query = query |> String.downcase
+    location = query |> String.downcase
+    with \
+      {:ok, response} <- perform_query(location, when_to_forecast, params)
+    do
+      response |> render()
+    end
+  end
+
+  @spec render(map()) :: String.t()
+  def render(response) do
+    renderer = Application.get_env(:forecastr, :renderer)
+    response |> renderer.render()
+  end
+
+  @type query :: String.t()
+  @spec perform_query(query, when_to_forecast, map()) :: String.t()
+  def perform_query(query, when_to_forecast, params) do
     with \
       {:get_cache, :miss}           <- {:get_cache, fetch_from_cache(query)},
-      {:fetch,     {:ok, response}} <- {:fetch,     fetch_from_backend(query, when_to_forecast, params)},
-      {:set_cache, _}               <- {:set_cache, cache_response(query, response)},
-      {:render, :ok}                <- {:render,    response |> render()} # this will write to console
+      {:fetch,     {:ok, response}} <- {:fetch,     fetch_from_backend(query, when_to_forecast, params)}
     do
-      :ok
+      cache_response(query, response)
+      {:ok, response}
     else
       {:get_cache, {:ok, response}} -> {:ok, response}
       {:fetch, _}                   -> {:error, :fetch_from_backend_failed}
     end
   end
 
-  # FIXME: fetch from cache doesn't take when_to_forecast into account?
+  # fetch form cache doesn't take when_to_forecast into account?
   @spec fetch_from_cache(query) :: :ok
   def fetch_from_cache(query) do
     case query |> Forecastr.Cache.get do
@@ -56,12 +69,6 @@ defmodule Forecastr do
   def cache_response(query, response) do
     expiration_minutes = Application.get_env(:forecastr, :ttl, 10 * 60_000)
     Forecastr.Cache.set(query, response, ttl: expiration_minutes)
-  end
-
-  @spec render(map()) :: String.t()
-  def render(response) do
-    renderer = Application.get_env(:forecastr, :renderer)
-    response |> renderer.render()
   end
 
 end
