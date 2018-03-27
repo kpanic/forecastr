@@ -34,8 +34,27 @@ defmodule ForecastrTest do
 
   @cache_key "foo_bar_baz"
 
-  test "caching works" do
-    assert :ok == Forecastr.Cache.set(@cache_key, @response_today)
-    assert Forecastr.Cache.get(@cache_key) == @response_today
+  setup do
+    Forecastr.Cache.Today.start_link([])
+    Forecastr.Cache.InFiveDays.start_link([])
+
+    on_exit fn ->
+      GenServer.stop(Forecastr.Cache.Today)
+      GenServer.stop(Forecastr.Cache.InFiveDays)
+    end
+  end
+
+  test "caching works for :today" do
+    assert :ok == Forecastr.Cache.Today.set(@cache_key, @response_today)
+    assert Forecastr.Cache.Today.get(@cache_key) == @response_today
+
+    assert is_nil(Forecastr.Cache.InFiveDays.get(@cache_key)) == true
+  end
+
+  test "caching works for :in_five_days" do
+    assert :ok == Forecastr.Cache.InFiveDays.set(@cache_key, @response_today)
+    assert Forecastr.Cache.InFiveDays.get(@cache_key) == @response_today
+
+    assert is_nil(Forecastr.Cache.Today.get(@cache_key)) == true
   end
 end
