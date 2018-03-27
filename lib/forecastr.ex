@@ -40,9 +40,9 @@ defmodule Forecastr do
   @type query :: String.t()
   @spec perform_query(query, when_to_forecast, map()) :: {:ok, response} | {:error, atom()}
   def perform_query(query, when_to_forecast, params) do
-    with {:ok, :miss} <- fetch_from_cache(query),
+    with {:ok, :miss} <- fetch_from_cache(when_to_forecast, query),
          {:ok, response} <- fetch_from_backend(when_to_forecast, query, params),
-         :ok = Forecastr.Cache.set(query, response) do
+         :ok = Forecastr.Cache.set(when_to_forecast, query, response) do
       {:ok, response}
     else
       {:ok, _response} = response -> response
@@ -50,9 +50,9 @@ defmodule Forecastr do
     end
   end
 
-  @spec fetch_from_cache(query) :: {:ok, :miss} | {:ok, map()}
-  def fetch_from_cache(query) do
-    case Forecastr.Cache.get(query) do
+  @spec fetch_from_cache(when_to_forecast,  query) :: {:ok, :miss} | {:ok, map()}
+  def fetch_from_cache(when_to_forecast, query) do
+    case Forecastr.Cache.get(when_to_forecast, query) do
       nil -> {:ok, :miss}
       response -> {:ok, response}
     end
