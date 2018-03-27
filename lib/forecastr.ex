@@ -21,9 +21,8 @@ defmodule Forecastr do
   @spec forecast(when_to_forecast, String.t(), map()) :: :ok | {:error, atom()}
   def forecast(when_to_forecast, query, params \\ %{units: :metric}) do
     location = query |> String.downcase()
-    with \
-      {:ok, response} <- perform_query(location, when_to_forecast, params)
-    do
+
+    with {:ok, response} <- perform_query(location, when_to_forecast, params) do
       response |> render()
     end
   end
@@ -36,24 +35,24 @@ defmodule Forecastr do
 
   @type response :: map()
   @type query :: String.t()
-  @spec perform_query(query, when_to_forecast, map()) :: {:ok, response} | {:error, :fetch_from_backend_failed}
+  @spec perform_query(query, when_to_forecast, map()) ::
+          {:ok, response} | {:error, :fetch_from_backend_failed}
   def perform_query(query, when_to_forecast, params) do
-    with \
-      {:get_cache, :miss}           <- {:get_cache, fetch_from_cache(query)},
-      {:fetch,     {:ok, response}} <- {:fetch,     fetch_from_backend(query, when_to_forecast, params)}
-    do
+    with {:get_cache, :miss} <- {:get_cache, fetch_from_cache(query)},
+         {:fetch, {:ok, response}} <-
+           {:fetch, fetch_from_backend(query, when_to_forecast, params)} do
       cache_response(query, response)
       {:ok, response}
     else
       {:get_cache, {:ok, response}} -> {:ok, response}
-      {:fetch, _}                   -> {:error, :fetch_from_backend_failed}
+      {:fetch, _} -> {:error, :fetch_from_backend_failed}
     end
   end
 
   @spec fetch_from_cache(query) :: :ok
   def fetch_from_cache(query) do
     case query |> Forecastr.Cache.get() do
-      nil      -> :miss
+      nil -> :miss
       response -> {:ok, response}
     end
   end
@@ -69,5 +68,4 @@ defmodule Forecastr do
     expiration_minutes = Application.get_env(:forecastr, :ttl, 10 * 60_000)
     Forecastr.Cache.set(query, response, ttl: expiration_minutes)
   end
-
 end
