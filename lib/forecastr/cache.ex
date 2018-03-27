@@ -10,8 +10,9 @@ defmodule Forecastr.Cache do
     GenServer.call(__MODULE__, {:get, query})
   end
 
-  def set(query, response, options) do
-    GenServer.call(__MODULE__, {:set, query, response, options})
+  def set(query, response) do
+    expiration_minutes = Application.get_env(:forecastr, :ttl, 10 * 60_000)
+    GenServer.call(__MODULE__, {:set, query, response, ttl: expiration_minutes})
   end
 
   # Server callbacks

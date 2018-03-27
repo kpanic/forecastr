@@ -35,7 +35,7 @@ defmodule ForecastrTest do
   @cache_key "foo_bar_baz"
 
   test "caching works" do
-    assert :ok == Forecastr.cache_response(@cache_key, @response_today)
-    assert Forecastr.fetch_from_cache(@cache_key) == {:ok, @response_today}
+    assert :ok == Forecastr.Cache.set(@cache_key, @response_today)
+    assert Forecastr.Cache.get(@cache_key) == @response_today
   end
 end
