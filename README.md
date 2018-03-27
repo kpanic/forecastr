@@ -60,8 +60,8 @@ lat: -12.0622, lon: -77.0366
 ![duck with sunglasses](duck_with_sunglasses.jpg)
 
 # TODO
+- [X] Travis
 - [ ] Tests!
-- [ ] Travis
 - [ ] Integrate https://forecast.io as a backend?
 - [ ] HTML renderer
 - [ ] JSON renderer
