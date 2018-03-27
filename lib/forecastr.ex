@@ -18,10 +18,9 @@ defmodule Forecastr do
   """
 
   @type when_to_forecast :: :today | :in_five_days
-  @type response :: map()
-  @spec forecast(when_to_forecast, String.t(), list()) :: {:ok, map()} | {:error, atom()}
+  @spec forecast(when_to_forecast, String.t(), map()) :: :ok | {:error, atom()}
   def forecast(when_to_forecast, query, params \\ %{units: :metric}) do
-    location = query |> String.downcase
+    location = query |> String.downcase()
     with \
       {:ok, response} <- perform_query(location, when_to_forecast, params)
     do
@@ -35,8 +34,9 @@ defmodule Forecastr do
     response |> renderer.render()
   end
 
+  @type response :: map()
   @type query :: String.t()
-  @spec perform_query(query, when_to_forecast, map()) :: String.t()
+  @spec perform_query(query, when_to_forecast, map()) :: {:ok, response} | {:error, :fetch_from_backend_failed}
   def perform_query(query, when_to_forecast, params) do
     with \
       {:get_cache, :miss}           <- {:get_cache, fetch_from_cache(query)},
@@ -50,10 +50,9 @@ defmodule Forecastr do
     end
   end
 
-  # fetch form cache doesn't take when_to_forecast into account?
   @spec fetch_from_cache(query) :: :ok
   def fetch_from_cache(query) do
-    case query |> Forecastr.Cache.get do
+    case query |> Forecastr.Cache.get() do
       nil      -> :miss
       response -> {:ok, response}
     end
