@@ -1,18 +1,18 @@
-defmodule Forecastr.Cache.Today do
+defmodule Forecastr.Cache.Worker do
   use GenServer
 
   # Client API
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, %{}, opts)
   end
 
-  def get(query) do
-    GenServer.call(__MODULE__, {:get, query})
+  def get(name, query) do
+    GenServer.call(name, {:get, query})
   end
 
-  def set(query, response) do
+  def set(name, query, response) do
     expiration_minutes = Application.get_env(:forecastr, :ttl, 10 * 60_000)
-    GenServer.call(__MODULE__, {:set, query, response, ttl: expiration_minutes})
+    GenServer.call(name, {:set, query, response, ttl: expiration_minutes})
   end
 
   # Server callbacks
