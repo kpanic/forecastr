@@ -30,6 +30,7 @@ defmodule Forecastr.Renderer.ASCII do
     ]
     |> render(opts)
   end
+
   @doc "Render five days weather condition"
   def render(
         %{
@@ -43,7 +44,6 @@ defmodule Forecastr.Renderer.ASCII do
         opts
       )
       when is_list(forecast_list) do
-
     forecasts =
       forecast_list
       |> extract_relevant_times()
@@ -57,13 +57,14 @@ defmodule Forecastr.Renderer.ASCII do
      ] ++ [forecasts])
     |> render(opts)
   end
+
   def render(output, return: :buffer) when is_list(output) do
     output
   end
+
   def render(output, _opts) when is_list(output) do
     IO.write(output)
   end
-
 
   def box(description, temperature, temp_max, temp_min) do
     # TODO: create different ASCII art for different weather conditions :)
@@ -80,23 +81,26 @@ defmodule Forecastr.Renderer.ASCII do
     |> Enum.map(fn {date, forecasts} ->
       forecasts =
         Enum.reduce(forecasts, [], fn %{
-          "weather" => weather,
-          "dt_txt" => date_time,
-          "main" => %{
-            "temp" => temp,
-            "temp_max" => temp_max,
-            "temp_min" => temp_min
-          }}, acc ->
-            main_weather_condition = extract_main_weather(weather)
-            time = extract_time(date_time)
-            period_of_the_day = Map.get(@relevant_times, time)
+                                        "weather" => weather,
+                                        "dt_txt" => date_time,
+                                        "main" => %{
+                                          "temp" => temp,
+                                          "temp_max" => temp_max,
+                                          "temp_min" => temp_min
+                                        }
+                                      },
+                                      acc ->
+          main_weather_condition = extract_main_weather(weather)
+          time = extract_time(date_time)
+          period_of_the_day = Map.get(@relevant_times, time)
 
-            [
-              "#{period_of_the_day}\n" <> box(main_weather_condition, temp, temp_max, temp_min)
-              | acc
-            ]
+          [
+            "#{period_of_the_day}\n" <> box(main_weather_condition, temp, temp_max, temp_min)
+            | acc
+          ]
         end)
         |> Enum.reverse()
+
       [Table.table([date], :unicode), Table.table([forecasts], :unicode)]
     end)
   end
