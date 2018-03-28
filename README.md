@@ -59,6 +59,14 @@ lat: -12.0622, lon: -77.0366
 
 ![duck with sunglasses](duck_with_sunglasses.jpg)
 
+# TODO
+- [X] Travis
+- [ ] Tests!
+- [ ] Integrate https://forecast.io as a backend?
+- [ ] HTML renderer
+- [ ] JSON renderer
+- [ ] Correct ASCII Art for the renderers that supports that
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed

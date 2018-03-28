@@ -1,41 +1,21 @@
 defmodule Forecastr.Cache do
-  use GenServer
+  @moduledoc """
+  "Proxy" module for different caches
+  """
 
-  # Client API
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+  def get(:today, query) do
+    Forecastr.Cache.Worker.get(Forecastr.Cache.Today, query)
   end
 
-  def get(query) do
-    GenServer.call(__MODULE__, {:get, query})
+  def get(:in_five_days, query) do
+    Forecastr.Cache.Worker.get(Forecastr.Cache.InFiveDays, query)
   end
 
-  def set(query, response, options) do
-    GenServer.call(__MODULE__, {:set, query, response, options})
+  def set(:today, query, response) do
+    Forecastr.Cache.Worker.set(Forecastr.Cache.Today, query, response)
   end
 
-  # Server callbacks
-  def init(state) do
-    {:ok, state}
-  end
-
-  def handle_call({:get, query}, _from, state) do
-    entry = Map.get(state, query)
-    {:reply, entry, state}
-  end
-
-  def handle_call({:set, query, response, options}, _from, state) do
-    state = Map.put(state, query, response)
-    purge_cache(query, options)
-    {:reply, :ok, state}
-  end
-
-  def purge_cache(query, ttl: minutes) do
-    # Purge every N minutes
-    Process.send_after(self(), {:purge_cache, query}, minutes)
-  end
-
-  def handle_info({:purge_cache, query}, state) do
-    {:noreply, Map.delete(state, query)}
+  def set(:in_five_days, query, response) do
+    Forecastr.Cache.Worker.set(Forecastr.Cache.InFiveDays, query, response)
   end
 end

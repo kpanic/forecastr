@@ -12,19 +12,23 @@ defmodule Forecastr.Renderer.ASCII do
     IO.puts(~s(Error: #{reason}))
   end
 
+  @doc "Render today weather condition"
   def render(%{
         "name" => name,
         "sys" => %{"country" => country},
         "coord" => %{"lat" => lat, "lon" => lon},
-        "weather" => [%{"description" => description}],
+        "weather" => weather ,
         "main" => %{"temp" => temp, "temp_max" => temp_max, "temp_min" => temp_min}
       }) do
     IO.puts(~s(Weather report: #{name}, #{country}))
     IO.puts(~s(lat: #{lat}, lon: #{lon}))
     IO.puts("")
-    IO.write(Table.table([box(description, temp, temp_max, temp_min)], :unicode))
+
+    main_weather_condition = extract_main_weather(weather)
+    IO.write(Table.table([box(main_weather_condition, temp, temp_max, temp_min)], :unicode))
   end
 
+  @doc "Render five days weather condition"
   def render(%{
         "city" => %{
           "name" => name,
@@ -48,7 +52,7 @@ defmodule Forecastr.Renderer.ASCII do
         |> Enum.reduce([], fn {hour,
                                [
                                  %{
-                                   "weather" => [%{"description" => description}],
+                                   "weather" => weather,
                                    "main" => %{
                                      "temp" => temp,
                                      "temp_max" => temp_max,
@@ -57,11 +61,13 @@ defmodule Forecastr.Renderer.ASCII do
                                  }
                                ]},
                               acc ->
+
           {_hour, period_of_the_day} =
             Enum.filter(@hours_to_take, fn {default_hour, _} -> default_hour == hour end)
             |> List.first()
 
-          ["#{period_of_the_day}\n" <> box(description, temp, temp_max, temp_min) | acc]
+          main_weather_condition = extract_main_weather(weather)
+          ["#{period_of_the_day}\n" <> box(main_weather_condition, temp, temp_max, temp_min) | acc]
         end)
         |> Enum.reverse()
 
@@ -102,5 +108,10 @@ defmodule Forecastr.Renderer.ASCII do
     end)
     |> Map.take(hours_to_lookup)
     |> Enum.sort()
+  end
+
+  defp extract_main_weather(weather) do
+    %{"description" => main_weather_condition} = List.first(weather)
+    main_weather_condition
   end
 end

@@ -17,26 +17,50 @@ defmodule Forecastr do
   Forecastr.forecast(:in_five_days, "Berlin", %{units: :imperial})
   """
 
-  @spec forecast(atom(), String.t(), list()) :: {:ok, map()} | {:error, atom()}
+  @type when_to_forecast :: :today | :in_five_days
+  @spec forecast(when_to_forecast, String.t(), map()) :: :ok | {:error, atom()}
   def forecast(when_to_forecast, query, params \\ %{units: :metric}) do
-    renderer = Application.get_env(:forecastr, :renderer)
-    query = String.downcase(query)
+    location = String.downcase(query)
 
-    # TODO: distinguish between :today and :in_five_days cache
-    case Forecastr.Cache.get(query) do
-      nil ->
-        backend = Application.get_env(:forecastr, :backend)
-
-        with {:ok, response} <- backend.weather(when_to_forecast, query, params),
-             expiration_minutes = Application.fetch_env!(:forecastr, :ttl) do
-          :ok = Forecastr.Cache.set(query, response, ttl: expiration_minutes)
-
-          response
-        end
-
-      response ->
-        response
+    with {:ok, response} <- perform_query(location, when_to_forecast, params) do
+      response
+      |> render()
     end
+  end
+
+  @spec render(map()) :: String.t()
+  def render(response) do
+    renderer = Application.get_env(:forecastr, :renderer)
+
+    response
     |> renderer.render()
+  end
+
+  @type response :: map()
+  @type query :: String.t()
+  @spec perform_query(query, when_to_forecast, map()) :: {:ok, response} | {:error, atom()}
+  def perform_query(query, when_to_forecast, params) do
+    with {:ok, :miss} <- fetch_from_cache(when_to_forecast, query),
+         {:ok, response} <- fetch_from_backend(when_to_forecast, query, params),
+         :ok = Forecastr.Cache.set(when_to_forecast, query, response) do
+      {:ok, response}
+    else
+      {:ok, _response} = response -> response
+      {:error, _} = error -> error
+    end
+  end
+
+  @spec fetch_from_cache(when_to_forecast,  query) :: {:ok, :miss} | {:ok, map()}
+  def fetch_from_cache(when_to_forecast, query) do
+    case Forecastr.Cache.get(when_to_forecast, query) do
+      nil -> {:ok, :miss}
+      response -> {:ok, response}
+    end
+  end
+
+  @spec fetch_from_backend(when_to_forecast, query, map()) :: {:ok, response}
+  def fetch_from_backend(when_to_forecast, query, params) do
+    backend = Application.get_env(:forecastr, :backend)
+    backend.weather(when_to_forecast, query, params)
   end
 end
