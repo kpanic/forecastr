@@ -5,9 +5,15 @@ Forecastr is an open source Weather API wrapper for OpenWeatherMap.
 Forecastr is an Elixir flavour of http://wttr.in that talks directly to OpenWeatherMap.
 Aim of the project is to provide a website similar to wttr.in written entirely in elixir
 
-**NOTE**: If you want to play with this project you have to obtain an api key from http://openweathermap.org/
-
 **Project status: initial. (very pre-alphaish)**
+
+**NOTE**
+If you want to play with this project you have to obtain an api key from http://openweathermap.org/
+and:
+
+```bash
+export OWM_API_KEY=YOUR_API_KEY
+```
 
 Sample output with the ASCII renderer:
 
