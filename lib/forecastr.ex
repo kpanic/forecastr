@@ -50,7 +50,7 @@ defmodule Forecastr do
     end
   end
 
-  @spec fetch_from_cache(when_to_forecast,  query) :: {:ok, :miss} | {:ok, map()}
+  @spec fetch_from_cache(when_to_forecast, query) :: {:ok, :miss} | {:ok, map()}
   def fetch_from_cache(when_to_forecast, query) do
     case Forecastr.Cache.get(when_to_forecast, query) do
       nil -> {:ok, :miss}
