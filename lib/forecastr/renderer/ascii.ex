@@ -7,6 +7,8 @@ defmodule Forecastr.Renderer.ASCII do
     {"00:00:00", "Night"}
   ]
 
+  @doc "render can be called with [:return :buffer] to avoid printing to stdout"
+  def render(weather, opts \\ [])
   @doc "Render today weather condition"
   def render(%{
         "name" => name,
@@ -14,7 +16,7 @@ defmodule Forecastr.Renderer.ASCII do
         "coord" => %{"lat" => lat, "lon" => lon},
         "weather" => weather,
         "main" => %{"temp" => temp, "temp_max" => temp_max, "temp_min" => temp_min}
-      }) do
+      }, opts) do
     main_weather_condition = extract_main_weather(weather)
 
     [
@@ -23,7 +25,7 @@ defmodule Forecastr.Renderer.ASCII do
       "\n",
       Table.table([box(main_weather_condition, temp, temp_max, temp_min)], :unicode)
     ]
-    |> render()
+    |> render(opts)
   end
 
   @doc "Render five days weather condition"
@@ -34,7 +36,7 @@ defmodule Forecastr.Renderer.ASCII do
           "coord" => %{"lat" => lat, "lon" => lon}
         },
         "list" => list
-      })
+      }, opts)
       when is_list(list) do
     weather =
       group_by_date(list)
@@ -76,11 +78,15 @@ defmodule Forecastr.Renderer.ASCII do
        ~s(lat: #{lat}, lon: #{lon}\n),
        "\n"
      ] ++ weather)
-    |> render()
+    |> render(opts)
   end
 
-  def render(output) when is_list(output) do
+  def render(output, []) when is_list(output) do
     IO.write(output)
+  end
+
+  def render(output, [return: :buffer]) when is_list(output) do
+    output
   end
 
   def box(description, temperature, temp_max, temp_min) do
