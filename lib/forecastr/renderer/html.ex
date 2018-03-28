@@ -6,7 +6,11 @@ defmodule Forecastr.Renderer.HTML do
   end
 
   defp render_html(ascii) when is_list(ascii) do
-    ["<pre>", ascii, "</pre>"]
+    [
+      ~S(<head>
+      <meta charset="UTF-8">
+      </head>),
+      "<pre>", ascii, "</pre>"]
     |> IO.write()
   end
 end
