@@ -7,6 +7,11 @@ defmodule Forecastr.Renderer.ASCII do
     {"00:00:00", "Night"}
   ]
 
+  def render({:error, reason}) do
+    IO.puts(~s(Unable to prepare the weather report))
+    IO.puts(~s(Error: #{reason}))
+  end
+
   def render(%{
         "name" => name,
         "sys" => %{"country" => country},
