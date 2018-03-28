@@ -12,15 +12,18 @@ defmodule Forecastr.Renderer.ASCII do
         "name" => name,
         "sys" => %{"country" => country},
         "coord" => %{"lat" => lat, "lon" => lon},
-        "weather" => weather ,
+        "weather" => weather,
         "main" => %{"temp" => temp, "temp_max" => temp_max, "temp_min" => temp_min}
       }) do
-    IO.puts(~s(Weather report: #{name}, #{country}))
-    IO.puts(~s(lat: #{lat}, lon: #{lon}))
-    IO.puts("")
-
     main_weather_condition = extract_main_weather(weather)
-    IO.write(Table.table([box(main_weather_condition, temp, temp_max, temp_min)], :unicode))
+
+    [
+      ~s(Weather report: #{name}, #{country}\n),
+      ~s(lat: #{lat}, lon: #{lon}\n),
+      "\n",
+      Table.table([box(main_weather_condition, temp, temp_max, temp_min)], :unicode)
+    ]
+    |> render()
   end
 
   @doc "Render five days weather condition"
@@ -33,41 +36,51 @@ defmodule Forecastr.Renderer.ASCII do
         "list" => list
       })
       when is_list(list) do
-    IO.puts(~s(Weather report: #{name}, #{country}))
-    IO.puts(~s(lat: #{lat}, lon: #{lon}))
-    IO.puts("")
-
-    group_by_date(list)
-    |> Enum.each(fn {date, forecasts} ->
-      IO.write(Table.table([date], :unicode))
-
-      forecasts =
-        forecasts
-        |> group_by_specific_time()
-        |> Enum.reduce([], fn {hour,
-                               [
-                                 %{
-                                   "weather" => weather,
-                                   "main" => %{
-                                     "temp" => temp,
-                                     "temp_max" => temp_max,
-                                     "temp_min" => temp_min
+    weather =
+      group_by_date(list)
+      |> Enum.map(fn {date, forecasts} ->
+        forecasts =
+          forecasts
+          |> group_by_specific_time()
+          |> Enum.reduce([], fn {hour,
+                                 [
+                                   %{
+                                     "weather" => weather,
+                                     "main" => %{
+                                       "temp" => temp,
+                                       "temp_max" => temp_max,
+                                       "temp_min" => temp_min
+                                     }
                                    }
-                                 }
-                               ]},
-                              acc ->
+                                 ]},
+                                acc ->
+            {_hour, period_of_the_day} =
+              Enum.filter(@hours_to_take, fn {default_hour, _} -> default_hour == hour end)
+              |> List.first()
 
-          {_hour, period_of_the_day} =
-            Enum.filter(@hours_to_take, fn {default_hour, _} -> default_hour == hour end)
-            |> List.first()
+            main_weather_condition = extract_main_weather(weather)
 
-          main_weather_condition = extract_main_weather(weather)
-          ["#{period_of_the_day}\n" <> box(main_weather_condition, temp, temp_max, temp_min) | acc]
-        end)
-        |> Enum.reverse()
+            [
+              "#{period_of_the_day}\n" <> box(main_weather_condition, temp, temp_max, temp_min)
+              | acc
+            ]
+          end)
+          |> Enum.reverse()
 
-      IO.write(Table.table([forecasts], :unicode))
-    end)
+        [Table.table([date], :unicode), Table.table([forecasts], :unicode)]
+      end)
+      |> List.flatten()
+
+    ([
+       ~s(Weather report: #{name}, #{country}\n),
+       ~s(lat: #{lat}, lon: #{lon}\n),
+       "\n"
+     ] ++ weather)
+    |> render()
+  end
+
+  def render(output) when is_list(output) do
+    IO.write(output)
   end
 
   def box(description, temperature, temp_max, temp_min) do
