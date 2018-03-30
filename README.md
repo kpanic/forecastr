@@ -73,6 +73,11 @@ lat: -12.0622, lon: -77.0366
 - [ ] JSON renderer
 - [ ] Correct ASCII Art for the renderers that supports that
 
+# Thank yous
+
+* The https://wttr.in project for inspiration
+* [wego]:(https://github.com/schachmat/wego) for the amazing ASCII art
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
