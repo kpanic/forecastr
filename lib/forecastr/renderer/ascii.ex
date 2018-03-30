@@ -1,4 +1,6 @@
 defmodule Forecastr.Renderer.ASCII do
+  @moduledoc false
+
   @relevant_times %{
     "09:00:00" => "Morning",
     "12:00:00" => "Noon",
@@ -108,13 +110,6 @@ defmodule Forecastr.Renderer.ASCII do
     962 => :codeunknown
   }
 
-  def show_all_boxes() do
-    Enum.each(@weather_codes, fn {_, code} ->
-      IO.puts(code)
-      IO.write(box(code, 1, 2, 3, 4))
-    end)
-  end
-
   @doc "render can be called with [:return :buffer] to avoid printing to stdout"
   def render(weather, opts \\ [])
   @doc "Render today weather condition"
@@ -135,7 +130,13 @@ defmodule Forecastr.Renderer.ASCII do
       ~s(Weather report: #{name}, #{country}\n),
       ~s(lat: #{lat}, lon: #{lon}\n),
       "\n",
-      Table.table([box(weather_code, main_weather_condition, temp, temp_max, temp_min)], :unicode)
+      Table.table(
+        [
+          ascii_for(weather_code)
+          |> append_weather_info(main_weather_condition, temp, temp_max, temp_min)
+        ],
+        :unicode
+      )
     ]
     |> render(opts)
   end
@@ -167,201 +168,244 @@ defmodule Forecastr.Renderer.ASCII do
     |> render(opts)
   end
 
+  @doc "Return the buffer to render"
   def render(output, return: :buffer) when is_list(output) do
     output
   end
 
+  @doc "Print the buffer to stdout"
   def render(output, _opts) when is_list(output) do
     IO.write(output)
   end
 
+  # TODO: re-organize weather info with humidity etc
+  # We should pass a map as a parameter
+  def append_weather_info(ascii, description, temperature, temp_max, temp_min) do
+    # The weather information to append to the ASCII art
+    weather_info = [
+      "#{description}     ",
+      "#{temperature} °C  ",
+      "max: #{temp_max} °C",
+      "min: #{temp_min} °C"
+    ]
 
-  # TODO: calculate dynamically the padding and create a function to append data
-  # to the ASCII art
-  def box(:codeunknown, description, temperature, temp_max, temp_min) do
+    # Convert the ASCII to a list
+    ascii_list = String.split(ascii, "\n")
+
+    ascii_art_longest_line = Enum.map(ascii_list, &String.length/1) |> Enum.max()
+
+    weather_length = Enum.count(weather_info)
+
+    ascii_art_length = Enum.count(ascii_list)
+
+    # ASCII that we want to process together with weather_info
+    ascii_subset = Enum.slice(ascii_list, 0..weather_length)
+
+    # Concatenate the ascii subset with the weather info
+    # Add the rest of the ascii art
+    ascii_subset
+    |> concat_ascii_with_weather_info(weather_info, ascii_art_longest_line)
+    |> Kernel.++(Enum.slice(ascii_list, weather_length..ascii_art_length))
+    |> Enum.join("\n")
+  end
+
+  def ascii_for(:codeunknown) do
     """
-    .-.                     
-    __)  #{description}     
-    (    #{temperature} °C  
-    `-᾿  max: #{temp_max} °C
-      •  min: #{temp_min} °C
+    .-.
+    __)
+    (
+    `-᾿
+      •
     """
   end
 
-  def box(:codecloudy, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codecloudy) do
     """
-       .--.     #{description}     
-    .-(    ).   #{temperature} °C  
-    (___.__)__) max: #{temp_max} °C
-                min: #{temp_min} °C
+       .--.
+    .-(    ).
+    (___.__)__)
+
     """
   end
 
-  def box(:codefog, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codefog) do
     """
-    _ - _ - _ - #{description}     
-    _ - _ - _   #{temperature} °C  
-    _ - _ - _ - max: #{temp_max} °C
-                min: #{temp_min} °C
+    _ - _ - _ -
+    _ - _ - _
+    _ - _ - _ -
+
     """
   end
 
-  def box(:codeheavyrain, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codeheavyrain) do
     """
-         .-.                      
-        (   ). #{description}     
-      (___(__) #{temperature} °C  
-    ‚ʻ‚ʻ‚ʻ‚ʻ   max: #{temp_max} °C
-    ‚ʻ‚ʻ‚ʻ‚ʻ   min: #{temp_min} °C
-    """
-  end
-
-  def box(:codeheavyshowers, description, temperature, temp_max, temp_min) do
-    """
-    _`/\"\".-.                     
-     ,\\_(   ).  #{description}     
-     /\(___(__) #{temperature} °C  
-       ‚ʻ‚ʻ‚ʻ‚ʻ max: #{temp_max} °C
-       ‚ʻ‚ʻ‚ʻ‚ʻ min: #{temp_min} °C
+         .-.
+        (   ).
+      (___(__)
+    ‚ʻ‚ʻ‚ʻ‚ʻ
+    ‚ʻ‚ʻ‚ʻ‚ʻ
     """
   end
 
-  def box(:codeheavysnow, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codeheavyshowers) do
     """
-       .-.                        
-      (   ).   #{description}     
-      (___(__) #{temperature} °C  
-      * * * *  max: #{temp_max} °C
-    * * * *    min: #{temp_min} °C
-    """
-  end
-
-  def box(:codeheavysnowshowers, description, temperature, temp_max, temp_min) do
-    """
-    _`/\"\".-.                       
-     ,\\_(   ).    #{description}     
-      /(___(__)   #{temperature} °C  
-          * * * * max: #{temp_max} °C
-        * * * *   min: #{temp_min} °C
+    _`/\"\".-.
+     ,\\_(   ).
+     /\(___(__)
+       ‚ʻ‚ʻ‚ʻ‚ʻ
+       ‚ʻ‚ʻ‚ʻ‚ʻ
     """
   end
 
-  def box(:codelightrain, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codeheavysnow) do
     """
-       .-.                       
-      (   ).  #{description}     
-    (___(__)  #{temperature} °C  
-      ʻ ʻ ʻ ʻ max: #{temp_max} °C
-    ʻ ʻ ʻ ʻ   min: #{temp_min} °C
-    """
-  end
-
-  def box(:codelightshowers, description, temperature, temp_max, temp_min) do
-    """
-    _`/\"\".-.                     
-     ,\\_(   ).  #{description}     
-     /(___(__)  #{temperature} °C  
-       ʻ ʻ ʻ ʻ  max: #{temp_max} °C
-       ʻ ʻ ʻ ʻ  min: #{temp_min} °C
+       .-.
+      (   ).
+      (___(__)
+      * * * *
+    * * * *
     """
   end
 
-  def box(:codelightsleet, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codeheavysnowshowers) do
     """
-      .-.                       
-     (   ).  #{description}     
-    (___(__) #{temperature} °C  
-     ʻ * ʻ * max: #{temp_max} °C
-    * ʻ * ʻ  min: #{temp_min} °C
-    """
-  end
-
-  def box(:codelightsleetshowers, description, temperature, temp_max, temp_min) do
-    """
-    _`/\"\".-.                      
-     ,\\_\(   ).  #{description}     
-      /(___(__)  #{temperature} °C  
-       ʻ * ʻ *   max: #{temp_max} °C
-      * ʻ * ʻ    min: #{temp_min} °C
+    _`/\"\".-.
+     ,\\_(   ).
+      /(___(__)
+          * * * *
+        * * * *
     """
   end
 
-  def box(:codelightsnow, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codelightrain) do
     """
-       .-.                       
-      (   ).  #{description}     
-    (___(__)  #{temperature} °C  
-      *  *  * max: #{temp_max} °C
-    *  *  *   min: #{temp_min} °C
-    """
-  end
-
-  def box(:codelightsnowshowers, description, temperature, temp_max, temp_min) do
-    """
-    _`/\"\".-.                      
-     ,\\_\(   ).  #{description}     
-     /(___(__)   #{temperature} °C  
-       *  *  *   max: #{temp_max} °C
-       *  *  *   min: #{temp_min} °C
+       .-.
+      (   ).
+    (___(__)
+      ʻ ʻ ʻ ʻ
+    ʻ ʻ ʻ ʻ
     """
   end
 
-  def box(:codepartlycloudy, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codelightshowers) do
     """
-      \\  /      #{description}     
-    _ /\"\".-.    #{temperature} °C  
-      \\_(   ).  max: #{temp_max} °C
-      /(___(__) min: #{temp_min} °C
-    """
-  end
-
-  def box(:codesunny, description, temperature, temp_max, temp_min) do
-    """
-      \\   /                     
-       .-.    #{description}     
-    ‒ (   ) ‒ #{temperature} °C  
-       `-᾿    max: #{temp_max} °C
-      /   \\   min: #{temp_min} °C
+    _`/\"\".-.
+     ,\\_(   ).
+     /(___(__)
+       ʻ ʻ ʻ ʻ
+       ʻ ʻ ʻ ʻ
     """
   end
 
-  def box(:codethunderyheavyrain, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codelightsleet) do
     """
-         .-.                        
-        (   ).   #{description}     
-      (___(__)   #{temperature} °C  
-    ‚ʻ⚡ʻ‚⚡‚ʻ     max: #{temp_max} °C
-    ‚ʻ‚ʻ⚡ʻ‚ʻ     min: #{temp_min} °C
-    """
-  end
-
-  def box(:codethunderyshowers, description, temperature, temp_max, temp_min) do
-    """
-    _`/\"\".-.                     
-     ,\\_(   ).  #{description}     
-     /(___(__)  #{temperature} °C  
-       ⚡ʻ ʻ⚡ʻ   max: #{temp_max} °C
-     ʻ ʻ ʻ ʻ    min: #{temp_min} °C
+      .-.
+     (   ).
+    (___(__)
+     ʻ * ʻ *
+    * ʻ * ʻ
     """
   end
 
-  def box(:codethunderysnowshowers, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codelightsleetshowers) do
     """
-    _`/\"\".-.                     
-     ,\\_(   ).  #{description}     
-     /(___(__)  #{temperature} °C  
-       *⚡ *⚡ *  max: #{temp_max} °C
-       *  *  *  min: #{temp_min} °C
+    _`/\"\".-.
+     ,\\_\(   ).
+      /(___(__)
+       ʻ * ʻ *
+      * ʻ * ʻ
     """
   end
 
-  def box(:codeverycloudy, description, temperature, temp_max, temp_min) do
+  def ascii_for(:codelightsnow) do
     """
-       .--.     #{description}     
-    .-(    ).   #{temperature} °C  
-    (___.__)__) max: #{temp_max} °C
-                min: #{temp_min} °C
+       .-.
+      (   ).
+    (___(__)
+      *  *  *
+    *  *  *
     """
+  end
+
+  def ascii_for(:codelightsnowshowers) do
+    """
+    _`/\"\".-.
+     ,\\_\(   ).
+     /(___(__)
+       *  *  *
+       *  *  *
+    """
+  end
+
+  def ascii_for(:codepartlycloudy) do
+    """
+      \\  /
+    _ /\"\".-.
+      \\_(   ).
+      /(___(__)
+    """
+  end
+
+  def ascii_for(:codesunny) do
+    """
+      \\   /
+       .-.
+    ‒ (   ) ‒
+       `-᾿
+      /   \\
+    """
+  end
+
+  def ascii_for(:codethunderyheavyrain) do
+    """
+         .-.
+        (   ).
+      (___(__)
+    ‚ʻ⚡ʻ‚⚡‚ʻ
+    ‚ʻ‚ʻ⚡ʻ‚ʻ
+    """
+  end
+
+  def ascii_for(:codethunderyshowers) do
+    """
+    _`/\"\".-.
+     ,\\_(   ).
+     /(___(__)
+       ⚡ʻ ʻ⚡ʻ
+     ʻ ʻ ʻ ʻ
+    """
+  end
+
+  def ascii_for(:codethunderysnowshowers) do
+    """
+    _`/\"\".-.
+     ,\\_(   ).
+     /(___(__)
+       *⚡ *⚡
+       *  *  *
+    """
+  end
+
+  def ascii_for(:codeverycloudy) do
+    """
+       .--.
+    .-(    ).
+    (___.__)__)
+
+    """
+  end
+
+  defp concat_ascii_with_weather_info(ascii_subset, weather_info, ascii_art_longest_line) do
+    blank_space = 1
+
+    Enum.map(Enum.zip(ascii_subset, weather_info), fn {ascii, weather} ->
+      current_length = String.length(ascii)
+      additional_blank_spaces = ascii_art_longest_line - current_length + blank_space
+      to_pad = current_length + additional_blank_spaces
+
+      String.pad_trailing(ascii, to_pad)
+      |> Kernel.<>(weather)
+    end)
   end
 
   defp prepare_forecasts_for_rendering(forecasts) do
@@ -385,11 +429,11 @@ defmodule Forecastr.Renderer.ASCII do
           time = extract_time(date_time)
           period_of_the_day = Map.get(@relevant_times, time)
 
-          [
-            "#{period_of_the_day}\n" <>
-              box(weather_code, main_weather_condition, temp, temp_max, temp_min)
-            | acc
-          ]
+          ascii =
+            ascii_for(weather_code)
+            |> append_weather_info(main_weather_condition, temp, temp_max, temp_min)
+
+          ["#{period_of_the_day}\n" <> ascii | acc]
         end)
         |> Enum.reverse()
 
