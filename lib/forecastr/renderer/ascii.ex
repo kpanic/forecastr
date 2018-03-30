@@ -435,7 +435,7 @@ defmodule Forecastr.Renderer.ASCII do
             ascii_for(weather_code)
             |> append_weather_info(main_weather_condition, temp, temp_max, temp_min)
 
-          ["#{period_of_the_day}\n" <> ascii | acc]
+          ["#{period_of_the_day} [#{time}]\n" <> ascii | acc]
         end)
         |> Enum.reverse()
 
