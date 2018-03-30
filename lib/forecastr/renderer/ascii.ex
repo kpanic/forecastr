@@ -160,6 +160,8 @@ defmodule Forecastr.Renderer.ASCII do
       |> group_by_date()
       |> prepare_forecasts_for_rendering()
 
+    # TODO: align correctly tabular output when we have different ASCII art
+    # shapes
     ([
        ~s(Weather report: #{name}, #{country}\n),
        ~s(lat: #{lat}, lon: #{lon}\n),
