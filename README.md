@@ -71,7 +71,7 @@ lat: -12.0622, lon: -77.0366
 - [ ] Integrate https://forecast.io as a backend?
 - [ ] HTML renderer
 - [ ] JSON renderer
-- [ ] Correct ASCII Art for the renderers that supports that
+- [ ] Correct ASCII Art for the renderers that supports that (In progress)
 
 # Thank yous
 
