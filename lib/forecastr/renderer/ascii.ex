@@ -111,6 +111,8 @@ defmodule Forecastr.Renderer.ASCII do
   }
 
   @doc "render can be called with [:return :buffer] to avoid printing to stdout"
+  @type weather :: map() | list()
+  @spec render(weather, Keyword.t()) :: :ok | list()
   def render(weather, opts \\ [])
   @doc "Render today weather condition"
   def render(
@@ -211,6 +213,7 @@ defmodule Forecastr.Renderer.ASCII do
     |> Enum.join("\n")
   end
 
+  @spec ascii_for(atom()) :: String.t()
   def ascii_for(:codeunknown) do
     """
     .-.

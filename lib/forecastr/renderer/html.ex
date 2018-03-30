@@ -1,6 +1,7 @@
 defmodule Forecastr.Renderer.HTML do
   @moduledoc false
 
+  @spec render(map()) :: :ok
   def render(map) do
     map
     |> Forecastr.Renderer.ASCII.render(return: :buffer)

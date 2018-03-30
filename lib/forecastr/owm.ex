@@ -1,4 +1,6 @@
 defmodule Forecastr.OWM do
+  @type when_to_forecast :: :today | :in_five_days
+  @spec weather(when_to_forecast, String.t(), map()) :: {:ok, map()} | {:error, atom()}
   def weather(when_to_forecast, query, opts) do
     endpoint = owm_api_endpoint(when_to_forecast)
     fetch_weather_information(endpoint <> "?q=#{query}", opts)
@@ -23,6 +25,7 @@ defmodule Forecastr.OWM do
     end
   end
 
+  @spec owm_api_endpoint(when_to_forecast) :: String.t()
   def owm_api_endpoint(:today), do: "api.openweathermap.org/data/2.5/weather"
   def owm_api_endpoint(:in_five_days), do: "api.openweathermap.org/data/2.5/forecast"
 end

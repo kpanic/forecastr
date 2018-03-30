@@ -18,7 +18,7 @@ defmodule Forecastr do
   """
 
   @type when_to_forecast :: :today | :in_five_days
-  @spec forecast(when_to_forecast, String.t(), map()) :: :ok | {:error, atom()}
+  @spec forecast(when_to_forecast, String.t(), map()) :: binary() | {:error, atom()}
   def forecast(when_to_forecast, query, params \\ %{units: :metric}) do
     location = String.downcase(query)
 
