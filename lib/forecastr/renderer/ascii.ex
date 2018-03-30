@@ -124,7 +124,7 @@ defmodule Forecastr.Renderer.ASCII do
         opts
       ) do
     %{"description" => main_weather_condition, "id" => weather_id} = extract_main_weather(weather)
-    weather_code = Map.get(@weather_codes, weather_id, :unknown)
+    weather_code = Map.get(@weather_codes, weather_id, :codeunknown)
 
     [
       ~s(Weather report: #{name}, #{country}\n),
@@ -427,7 +427,7 @@ defmodule Forecastr.Renderer.ASCII do
           %{"description" => main_weather_condition, "id" => weather_id} =
             extract_main_weather(weather)
 
-          weather_code = Map.get(@weather_codes, weather_id, :unknown)
+          weather_code = Map.get(@weather_codes, weather_id, :codeunknown)
           time = extract_time(date_time)
           period_of_the_day = Map.get(@relevant_times, time)
 
