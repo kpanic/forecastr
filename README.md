@@ -16,7 +16,7 @@ export OWM_API_KEY=YOUR_API_KEY
 ```
 
 Sample output for today's forecast
-```
+<pre>
 iex(1)> Forecastr.forecast(:today, "Berlin")
 Weather report: Berlin, DE
 lat: 52.52, lon: 13.39
@@ -29,11 +29,11 @@ lat: 52.52, lon: 13.39
 │   /   \   min: 3 °C          │
 │                              │
 └──────────────────────────────┘
-```
+</pre>
 
 Sample output with the ASCII renderer:
 
-```
+<pre>
 iex(1)> Forecastr.forecast(:in_five_days, "Lima")
 Weather report: Lima, PE
 lat: -12.0622, lon: -77.0366
@@ -110,7 +110,7 @@ lat: -12.0622, lon: -77.0366
 │                             │
 └─────────────────────────────┘
 [...]
-```
+</pre>
 
 
 > "*All the ducks are swimming in the water
