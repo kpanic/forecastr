@@ -17,7 +17,7 @@ export OWM_API_KEY=YOUR_API_KEY
 
 Also put in your `config/config.exs`
 
-```
+```elixir
 config :forecastr,
   appid: System.get_env("OWM_API_KEY"),
   backend: Forecastr.OWM,
