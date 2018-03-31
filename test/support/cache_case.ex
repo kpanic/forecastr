@@ -13,6 +13,7 @@ defmodule Forecastr.CacheCase do
       assert GenServer.stop(Forecastr.Cache.InFiveDays) == :ok
       Application.stop(:forecastr)
     end)
+
     :ok
   end
 end

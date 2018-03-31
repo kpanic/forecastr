@@ -21,6 +21,7 @@ defmodule Forecastr do
   @spec forecast(when_to_forecast, String.t(), map()) :: binary() | {:error, atom()}
   def forecast(when_to_forecast, query, params \\ %{units: :metric})
   def forecast(_when_to_forecast, "", _params), do: nil
+
   def forecast(when_to_forecast, query, params) do
     location = String.downcase(query)
 
