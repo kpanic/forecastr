@@ -1,4 +1,6 @@
 defmodule Forecastr.OWM do
+  @moduledoc false
+
   @type when_to_forecast :: :today | :in_five_days
   @spec weather(when_to_forecast, String.t(), map()) :: {:ok, map()} | {:error, atom()}
   def weather(when_to_forecast, query, opts) do

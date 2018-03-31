@@ -134,7 +134,8 @@ defmodule Forecastr.Renderer.ASCII do
       "\n",
       Table.table(
         [
-          ascii_for(weather_code)
+          weather_code
+          |> ascii_for()
           |> append_weather_info(main_weather_condition, temp, temp_max, temp_min)
         ],
         :unicode
@@ -196,7 +197,10 @@ defmodule Forecastr.Renderer.ASCII do
     # Convert the ASCII to a list
     ascii_list = String.split(ascii, "\n")
 
-    ascii_art_longest_line = Enum.map(ascii_list, &String.length/1) |> Enum.max()
+    ascii_art_longest_line =
+      ascii_list
+      |> Enum.map(&String.length/1)
+      |> Enum.max()
 
     weather_length = Enum.count(weather_info)
 
@@ -408,7 +412,8 @@ defmodule Forecastr.Renderer.ASCII do
       additional_blank_spaces = ascii_art_longest_line - current_length + blank_space
       to_pad = current_length + additional_blank_spaces
 
-      String.pad_trailing(ascii, to_pad)
+      ascii
+      |> String.pad_trailing(to_pad)
       |> Kernel.<>(weather)
     end)
   end
@@ -417,7 +422,8 @@ defmodule Forecastr.Renderer.ASCII do
     forecasts
     |> Enum.map(fn {date, forecasts} ->
       forecasts =
-        Enum.reduce(forecasts, [], fn %{
+        forecasts
+        |> Enum.reduce([], fn %{
                                         "weather" => weather,
                                         "dt_txt" => date_time,
                                         "main" => %{
@@ -435,7 +441,8 @@ defmodule Forecastr.Renderer.ASCII do
           period_of_the_day = Map.get(@relevant_times, time)
 
           ascii =
-            ascii_for(weather_code)
+            weather_code
+            |> ascii_for()
             |> append_weather_info(main_weather_condition, temp, temp_max, temp_min)
 
           ["#{period_of_the_day} [#{time}]\n" <> ascii | acc]

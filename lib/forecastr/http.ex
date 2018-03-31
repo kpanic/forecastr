@@ -1,4 +1,6 @@
 defmodule Forecastr.HTTP do
+  @moduledoc false
+
   use HTTPoison.Base
 
   @spec process_url(String.t()) :: String.t()

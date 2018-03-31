@@ -25,7 +25,7 @@ defmodule ForecastrTest do
       "sunset" => 1_522_085_472,
       "type" => 1
     },
-    "visibility" => 10000,
+    "visibility" => 10_000,
     "weather" => [
       %{"description" => "scattered clouds", "icon" => "03d", "id" => 802, "main" => "Clouds"}
     ],

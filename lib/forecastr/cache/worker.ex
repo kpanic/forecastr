@@ -1,4 +1,6 @@
 defmodule Forecastr.Cache.Worker do
+  @moduledoc false
+
   use GenServer
 
   # Client API
