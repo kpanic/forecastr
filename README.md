@@ -32,7 +32,7 @@ Sample output for 5 days:
 # TODO
 - [X] Travis
 - [ ] Correct ASCII Art for the renderers that supports that (In progress)
-- [ ] Tests!
+- [ ] Tests! (in progress)
 - [ ] Integrate https://forecast.io as a backend?
 - [ ] HTML renderer
 - [ ] JSON renderer
