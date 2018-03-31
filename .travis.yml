@@ -2,4 +2,10 @@ sudo: required
 language: elixir
 elixir:
   - 1.6.4
-script: "mix test"
+script:
+  - mix test
+  - mix dialyzer --plt
+  - mix dialyzer --halt-exit-status
+cache:
+  - directories:
+      - .dialyzer
