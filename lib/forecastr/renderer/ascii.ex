@@ -110,10 +110,9 @@ defmodule Forecastr.Renderer.ASCII do
     962 => :codeunknown
   }
 
-  @doc "render can be called with [:return :buffer] to avoid printing to stdout"
-  @type weather :: map() | list()
-  @spec render(weather, Keyword.t()) :: :ok | list()
-  def render(weather, opts \\ [])
+  @type weather :: map()
+  @spec render(weather) :: :ok | list()
+  def render(weather)
   @doc "Render today weather condition"
   def render(
         %{
@@ -122,8 +121,7 @@ defmodule Forecastr.Renderer.ASCII do
           "coord" => %{"lat" => lat, "lon" => lon},
           "weather" => weather,
           "main" => %{"temp" => temp, "temp_max" => temp_max, "temp_min" => temp_min}
-        },
-        opts
+        }
       ) do
     %{"description" => main_weather_condition, "id" => weather_id} = extract_main_weather(weather)
     weather_code = Map.get(@weather_codes, weather_id, :codeunknown)
@@ -141,7 +139,6 @@ defmodule Forecastr.Renderer.ASCII do
         :unicode
       )
     ]
-    |> render(opts)
   end
 
   @doc "Render five days weather condition"
@@ -153,8 +150,7 @@ defmodule Forecastr.Renderer.ASCII do
             "coord" => %{"lat" => lat, "lon" => lon}
           },
           "list" => forecast_list
-        },
-        opts
+        }
       )
       when is_list(forecast_list) do
     forecasts =
@@ -170,17 +166,6 @@ defmodule Forecastr.Renderer.ASCII do
        ~s(lat: #{lat}, lon: #{lon}\n),
        "\n"
      ] ++ [forecasts])
-    |> render(opts)
-  end
-
-  @doc "Return the buffer to render"
-  def render(output, return: :buffer) when is_list(output) do
-    output
-  end
-
-  @doc "Print the buffer to stdout"
-  def render(output, _opts) when is_list(output) do
-    IO.write(output)
   end
 
   # TODO: re-organize weather info with humidity etc

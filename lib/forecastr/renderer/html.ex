@@ -1,10 +1,10 @@
 defmodule Forecastr.Renderer.HTML do
   @moduledoc false
 
-  @spec render(map()) :: :ok
+  @spec render(map()) :: list()
   def render(map) do
     map
-    |> Forecastr.Renderer.ASCII.render(return: :buffer)
+    |> Forecastr.Renderer.ASCII.render()
     |> render_html()
   end
 
@@ -13,6 +13,5 @@ defmodule Forecastr.Renderer.HTML do
     [~S(<head>
       <meta charset="UTF-8">
       </head>), "<pre>", ascii, "</pre>"]
-    |> IO.write()
   end
 end
