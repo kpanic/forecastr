@@ -1,7 +1,6 @@
 defmodule ForecastrTest do
   use Forecastr.CacheCase
 
-  import ExUnit.CaptureIO
   @moduletag :capture_log
 
   defmodule OWMBackendToday do
@@ -23,14 +22,14 @@ defmodule ForecastrTest do
   end
 
   test "Forecast with an empty string" do
-    assert is_nil(Forecastr.forecast(:today, "")) == true
-    assert is_nil(Forecastr.forecast(:in_five_days, "")) == true
+    assert {:error, :not_found} = Forecastr.forecast(:today, "")
+    assert {:error, :not_found} = Forecastr.forecast(:in_five_days, "")
   end
 
   test "Forecast for a city today" do
     Application.put_env(:forecastr, :backend, OWMBackendToday)
-    output = capture_io(fn -> Forecastr.forecast(:today, "Wonderland") end)
-    assert String.length(output) > 0
+    assert {:ok, response} = Forecastr.forecast(:today, "Wonderland")
+    assert Enum.count(response) > 0
   end
 
   test "Forecast for a city returns an error" do
@@ -41,39 +40,45 @@ defmodule ForecastrTest do
 
   test "Forecast for a city in 5 days" do
     Application.put_env(:forecastr, :backend, OWMBackendFiveDays)
-    output = capture_io(fn -> Forecastr.forecast(:in_five_days, "Wonderland") end)
-    assert String.length(output) > 0
+    assert {:ok, response} = Forecastr.forecast(:in_five_days, "Wonderland")
+    assert Enum.count(response) > 0
   end
 
-  test "Forecastr.forecast/3 cache correctly :today" do
+  test "Forecastr.forecast cache correctly :today" do
     Application.put_env(:forecastr, :backend, OWMBackendToday)
-    capture_io(fn -> Forecastr.forecast(:today, "Wonderland") end)
+    assert {:ok, _response} = Forecastr.forecast(:today, "Wonderland")
     state = :sys.get_state(Forecastr.Cache.Today)
 
     assert %{"wonderland" => today_weather()} == state
   end
 
-  test "Forecastr.forecast/3 cache correctly :in_five_days" do
+  test "Forecastr.forecast cache correctly :in_five_days" do
     Application.put_env(:forecastr, :backend, OWMBackendFiveDays)
-    capture_io(fn -> Forecastr.forecast(:in_five_days, "Wonderland") end)
+    assert {:ok, _response} = Forecastr.forecast(:in_five_days, "Wonderland")
     state = :sys.get_state(Forecastr.Cache.InFiveDays)
 
     assert %{"wonderland" => five_days_weather()} == state
   end
 
-  test "Forecastr.forecast/3 hits the cache when it's pre-warmed for today" do
+  test "Forecastr.forecast hits the cache when it's pre-warmed for today" do
     assert :ok = Forecastr.Cache.set(:today, "wonderland", today_weather())
     # It does hit the cache, not the backend, the backend is not configured
-    output = capture_io(fn -> Forecastr.forecast(:today, "wonderland") end)
-    assert output =~ "Wonderland"
+    assert {:ok, response} = Forecastr.forecast(:today, "wonderland")
+    assert Enum.count(response) > 0
   end
 
-  test "Forecastr.forecast/3 hits the cache when it's pre-warmed for five days" do
+  test "Forecastr.forecast hits the cache when it's pre-warmed for five days" do
     assert :ok = Forecastr.Cache.set(:in_five_days, "wonderland", five_days_weather())
 
     # It does hit the cache, not the backend, the backend is not configured
-    output = capture_io(fn -> Forecastr.forecast(:in_five_days, "wonderland") end)
-    assert output =~ "Wonderland"
+    assert {:ok, response} = Forecastr.forecast(:in_five_days, "wonderland")
+    assert Enum.count(response) > 0
+  end
+
+  test "Forecast.forecast uses the html renderer" do
+    Application.put_env(:forecastr, :backend, OWMBackendFiveDays)
+    assert {:ok, [response | _rest]} = Forecastr.forecast(:in_five_days, "wonderland", %{}, Forecastr.Renderer.HTML)
+    assert response =~ "<head>"
   end
 
   def today_weather do
