@@ -8,6 +8,8 @@ defmodule Forecastr.MixProject do
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
       elixirc_paths: elixirc_paths(Mix.env),
       dialyzer: [plt_file: ".dialyzer/local.plt"]
     ]
@@ -26,7 +28,8 @@ defmodule Forecastr.MixProject do
       {:poison, "~> 3.1"},
       {:table, "~> 0.0.5"},
       {:dialyxir, "~> 0.5.1", only: [:dev], runtime: false},
-      {:credo, "~> 0.9.0-rc1", only: [:dev, :test], runtime: false}
+      {:credo, "~> 0.9.0-rc1", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.8", only: :test}
     ]
   end
 
