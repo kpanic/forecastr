@@ -1,6 +1,8 @@
 defmodule Forecastr.CacheCase do
   use ExUnit.CaseTemplate
 
+  @moduledoc false
+
   setup do
     Application.ensure_all_started(:forecastr)
     Forecastr.Cache.Worker.start_link(name: Forecastr.Cache.Today)
