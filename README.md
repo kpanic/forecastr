@@ -15,6 +15,17 @@ and:
 export OWM_API_KEY=YOUR_API_KEY
 ```
 
+Also put in your `config/config.exs`
+
+```
+config :forecastr,
+  appid: System.get_env("OWM_API_KEY"),
+  backend: Forecastr.OWM,
+  renderer: Forecastr.Renderer.ASCII,
+  # 10 minutes by default per OWM policy
+  ttl: 10 * 60_000
+```
+
 Sample output for today's forecast
 
 ![today](today.png)
