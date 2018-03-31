@@ -424,15 +424,15 @@ defmodule Forecastr.Renderer.ASCII do
       forecasts =
         forecasts
         |> Enum.reduce([], fn %{
-                                        "weather" => weather,
-                                        "dt_txt" => date_time,
-                                        "main" => %{
-                                          "temp" => temp,
-                                          "temp_max" => temp_max,
-                                          "temp_min" => temp_min
-                                        }
-                                      },
-                                      acc ->
+                                "weather" => weather,
+                                "dt_txt" => date_time,
+                                "main" => %{
+                                  "temp" => temp,
+                                  "temp_max" => temp_max,
+                                  "temp_min" => temp_min
+                                }
+                              },
+                              acc ->
           %{"description" => main_weather_condition, "id" => weather_id} =
             extract_main_weather(weather)
 
