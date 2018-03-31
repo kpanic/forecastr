@@ -24,7 +24,8 @@ defmodule Forecastr.MixProject do
       {:httpoison, "~> 1.0"},
       {:poison, "~> 3.1"},
       {:table, "~> 0.0.5"},
-      {:dialyxir, "~> 0.5.1", only: [:dev], runtime: false}
+      {:dialyxir, "~> 0.5.1", only: [:dev], runtime: false},
+      {:credo, "~> 0.9.0-rc1", only: [:dev, :test], runtime: false}
     ]
   end
 end
