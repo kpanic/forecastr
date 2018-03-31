@@ -1,7 +1,8 @@
 defmodule Forecastr.Cache.WorkerTest do
-  use ExUnit.Case
+  use Forecastr.CacheCase
 
   doctest Forecastr
+  @moduletag :capture_log
 
   @response_today %{
     "base" => "stations",
@@ -35,24 +36,14 @@ defmodule Forecastr.Cache.WorkerTest do
 
   @cache_key "foo_bar_baz"
 
-  setup do
-    Forecastr.Cache.Worker.start_link(name: Forecastr.Cache.Today)
-    Forecastr.Cache.Worker.start_link(name: Forecastr.Cache.InFiveDays)
-
-    on_exit(fn ->
-      GenServer.stop(Forecastr.Cache.Today)
-      GenServer.stop(Forecastr.Cache.InFiveDays)
-    end)
-  end
-
-  test "caching works for :today" do
+  test "Caching works for :today" do
     assert :ok == Forecastr.Cache.Worker.set(Forecastr.Cache.Today, @cache_key, @response_today)
     assert Forecastr.Cache.Worker.get(Forecastr.Cache.Today, @cache_key) == @response_today
 
     assert is_nil(Forecastr.Cache.Worker.get(Forecastr.Cache.InFiveDays, @cache_key)) == true
   end
 
-  test "caching works for :in_five_days" do
+  test "Caching works for :in_five_days" do
     assert :ok ==
              Forecastr.Cache.Worker.set(Forecastr.Cache.InFiveDays, @cache_key, @response_today)
 
