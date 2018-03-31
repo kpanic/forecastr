@@ -8,6 +8,7 @@ defmodule Forecastr.OWM do
     fetch_weather_information(endpoint <> "?q=#{query}", opts)
   end
 
+  @spec fetch_weather_information(binary(), map()) :: {:ok, map()} | {:error, atom()}
   def fetch_weather_information(endpoint, opts) do
     with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
            Forecastr.HTTP.get(endpoint, [], params: opts) do
