@@ -62,19 +62,17 @@ defmodule ForecastrTest do
   end
 
   test "Forecastr.forecast/3 hits the cache when it's pre-warmed for today" do
-    :sys.replace_state(Forecastr.Cache.Today, fn _state -> %{"wonderland" => today_weather()} end)
+    assert :ok = Forecastr.Cache.set(:today, "wonderland", today_weather())
     # It does hit the cache, not the backend, the backend is not configured
     output = capture_io(fn -> Forecastr.forecast(:today, "wonderland") end)
     assert output =~ "Wonderland"
   end
 
   test "Forecastr.forecast/3 hits the cache when it's pre-warmed for five days" do
-    :sys.replace_state(Forecastr.Cache.InFiveDays, fn _state ->
-      %{"wonderland" => five_days_weather()}
-    end)
+    assert :ok = Forecastr.Cache.set(:in_five_days, "wonderland", five_days_weather())
 
     # It does hit the cache, not the backend, the backend is not configured
-    output = capture_io(fn -> Forecastr.forecast(:today, "wonderland") end)
+    output = capture_io(fn -> Forecastr.forecast(:in_five_days, "wonderland") end)
     assert output =~ "Wonderland"
   end
 
