@@ -5,38 +5,31 @@ defmodule Forecastr do
   The Forecastr user API is exposed in this way:
 
   # Query the OWM API for today's weather
-  Forecastr.forecast(:today, query, params \\ %{})
+  Forecastr.forecast(:today, query, params \\ %{}, renderer \\ Forecastr.Renderer.ASCII )
 
   # Query the OWM API for the forecast in the next 5 days
-  Forecastr.forecast(:in_five_days, query, params \\ %{})
+  Forecastr.forecast(:in_five_days, query, params \\ %{}, renderer \\ Forecastr.Renderer.HTML )
 
   For example:
 
   Forecastr.forecast(:today, "Berlin")
 
   Forecastr.forecast(:in_five_days, "Berlin", %{units: :imperial})
+
+  Forecastr.forecast(:in_five_days, "Berlin", %{units: :imperial}, Forecastr.Renderer.HTML)
   """
 
   @type when_to_forecast :: :today | :in_five_days
-  @spec forecast(when_to_forecast, String.t(), map()) :: binary() | {:error, atom()}
-  def forecast(when_to_forecast, query, params \\ %{units: :metric})
-  def forecast(_when_to_forecast, "", _params), do: nil
+  @spec forecast(when_to_forecast, String.t(), map(), atom()) :: binary() | {:error, atom()}
+  def forecast(when_to_forecast, query, params \\ %{units: :metric}, renderer \\ Forecastr.Renderer.ASCII)
+  def forecast(_when_to_forecast, "", _params, _renderer), do: {:error, :not_found}
 
-  def forecast(when_to_forecast, query, params) do
+  def forecast(when_to_forecast, query, params, renderer) do
     location = String.downcase(query)
 
     with {:ok, response} <- perform_query(location, when_to_forecast, params) do
-      response
-      |> render()
+      {:ok, renderer.render(response)}
     end
-  end
-
-  @spec render(map()) :: String.t()
-  def render(response) do
-    renderer = Application.get_env(:forecastr, :renderer)
-
-    response
-    |> renderer.render()
   end
 
   @type response :: map()
