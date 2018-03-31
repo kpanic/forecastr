@@ -6,6 +6,8 @@ defmodule Forecastr.MixProject do
       app: :forecastr,
       version: "0.1.0",
       elixir: "~> 1.6",
+      description: description(),
+      package: package(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
@@ -35,4 +37,31 @@ defmodule Forecastr.MixProject do
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
+
+  defp description() do
+    """
+    Forecastr, the Elixir way to check the weather forecast
+    """
+  end
+
+  defp package() do
+    [
+      files: [
+        "config",
+        "lib",
+        "LICENSE",
+        "mix.exs",
+        "mix.lock",
+        "README.md"
+      ],
+      maintainers: ["Marco Milanesi"],
+      licenses: ["Apache 2.0"],
+      links: %{
+        "GitHub" => "https://github.com/kpanic/forecastr",
+        "Contributors" => "https://github.com/kpanic/forecastr/graphs/contributors",
+        "Issues" => "https://github.com/kpanic/forecastr/issues"
+      }
+    ]
+  end
+
 end
