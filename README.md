@@ -41,7 +41,7 @@ Sample output for 5 days:
 # Thank yous
 
 * The https://wttr.in project for inspiration
-* [wego]:(https://github.com/schachmat/wego) for the amazing ASCII art
+* ![wego](https://github.com/schachmat/wego) for the amazing ASCII art
 
 ## Installation
 
