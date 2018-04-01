@@ -184,7 +184,7 @@ defmodule Forecastr.Renderer.ASCII do
 
     ascii_art_longest_line =
       ascii_list
-      |> Enum.map(&String.length/1)
+      |> Stream.map(&String.length/1)
       |> Enum.max()
 
     weather_length = Enum.count(weather_info)
@@ -392,14 +392,15 @@ defmodule Forecastr.Renderer.ASCII do
   defp concat_ascii_with_weather_info(ascii_subset, weather_info, ascii_art_longest_line) do
     blank_space = 1
 
-    Enum.map(Enum.zip(ascii_subset, weather_info), fn {ascii, weather} ->
-      current_length = String.length(ascii)
-      additional_blank_spaces = ascii_art_longest_line - current_length + blank_space
-      to_pad = current_length + additional_blank_spaces
+    Enum.map(
+      Stream.zip(ascii_subset, weather_info), fn {ascii, weather} ->
+        current_length = String.length(ascii)
+        additional_blank_spaces = ascii_art_longest_line - current_length + blank_space
+        to_pad = current_length + additional_blank_spaces
 
-      ascii
-      |> String.pad_trailing(to_pad)
-      |> Kernel.<>(weather)
+        ascii
+        |> String.pad_trailing(to_pad)
+        |> Kernel.<>(weather)
     end)
   end
 
@@ -450,7 +451,7 @@ defmodule Forecastr.Renderer.ASCII do
 
   defp extract_relevant_times(forecast_list) do
     forecast_list
-    |> Enum.filter(fn element ->
+    |> Stream.filter(fn element ->
       time = extract_time(element["dt_txt"])
       time in Map.keys(@relevant_times) == true
     end)
