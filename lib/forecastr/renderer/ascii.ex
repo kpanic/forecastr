@@ -161,11 +161,13 @@ defmodule Forecastr.Renderer.ASCII do
 
     # TODO: align correctly tabular output when we have different ASCII art
     # shapes
-    ([
-       ~s(Weather report: #{name}, #{country}\n),
-       ~s(lat: #{lat}, lon: #{lon}\n),
-       "\n"
-     ] ++ [forecasts])
+    [
+      [
+        ~s(Weather report: #{name}, #{country}\n),
+        ~s(lat: #{lat}, lon: #{lon}\n),
+        "\n"
+      ] | [forecasts]
+    ]
   end
 
   # TODO: re-organize weather info with humidity etc
@@ -196,9 +198,12 @@ defmodule Forecastr.Renderer.ASCII do
 
     # Concatenate the ascii subset with the weather info
     # Add the rest of the ascii art
-    ascii_subset
-    |> concat_ascii_with_weather_info(weather_info, ascii_art_longest_line)
-    |> Kernel.++(Enum.slice(ascii_list, weather_length..ascii_art_length))
+    ascii_with_weather_info =
+      ascii_subset
+      |> concat_ascii_with_weather_info(weather_info, ascii_art_longest_line)
+
+    [ascii_with_weather_info | Enum.slice(ascii_list, weather_length..ascii_art_length)]
+    |> List.flatten()
     |> Enum.join("\n")
   end
 
