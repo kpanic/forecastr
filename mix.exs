@@ -37,7 +37,8 @@ defmodule Forecastr.MixProject do
       {:dialyxir, "~> 0.5.1", only: [:dev], runtime: false},
       {:credo, "~> 0.9.0-rc1", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.8", only: :test},
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:mogrify, "~> 0.5.6"}
     ]
   end
 
