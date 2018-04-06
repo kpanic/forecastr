@@ -38,7 +38,7 @@ defmodule Forecastr do
   def perform_query(query, when_to_forecast, params) do
     with {:ok, :miss} <- fetch_from_cache(when_to_forecast, query),
          {:ok, response} <- fetch_from_backend(when_to_forecast, query, params),
-         :ok = Forecastr.Cache.set(when_to_forecast, query, response) do
+         :ok <- Forecastr.Cache.set(when_to_forecast, query, response) do
       {:ok, response}
     else
       {:ok, _response} = response -> response
