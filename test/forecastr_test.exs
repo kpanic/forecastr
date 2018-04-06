@@ -75,12 +75,6 @@ defmodule ForecastrTest do
     assert Enum.count(response) > 0
   end
 
-  test "Forecast.forecast uses the html renderer" do
-    Application.put_env(:forecastr, :backend, OWMBackendFiveDays)
-    assert {:ok, [response | _rest]} = Forecastr.forecast(:in_five_days, "wonderland", %{}, Forecastr.Renderer.HTML)
-    assert response =~ "<head>"
-  end
-
   def today_weather do
     %{
       "name" => "Wonderland",
