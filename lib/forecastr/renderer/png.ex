@@ -24,7 +24,7 @@ defmodule Forecastr.Renderer.PNG do
     |> canvas("black")
     |> custom("gravity", "center")
     |> custom("fill", "white")
-    |> custom("font", "FreeMono-Bold")
+    |> custom("font", "DejaVu-Sans-Mono-Bold")
     |> custom("draw", "text 0,0 '#{ascii}'")
     |> create(path: path)
 
