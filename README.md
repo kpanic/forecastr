@@ -60,7 +60,7 @@ by adding `forecastr` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:forecastr, "~> 0.1.1"}
+    {:forecastr, "~> 0.1.2"}
   ]
 end
 ```
