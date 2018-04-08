@@ -9,7 +9,7 @@ defmodule Forecastr.Renderer.PNG do
     |> render_png(city_name)
   end
 
-  def render(map = %{"city" => %{"name" => city_name}}) do
+  def render(%{"city" => %{"name" => city_name}}) do
     "#{city_name}.png"
   end
 
