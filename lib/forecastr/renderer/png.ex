@@ -13,7 +13,7 @@ defmodule Forecastr.Renderer.PNG do
     "#{city_name}.png"
   end
 
-  defp render_png(ascii, city_name) when is_list(ascii) do
+  def render_png(ascii, city_name) when is_list(ascii) do
     city_name = String.downcase(city_name)
 
     filename = "#{city_name}.png"
