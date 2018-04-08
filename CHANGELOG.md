@@ -1,12 +1,9 @@
 # Change Log
 
+## [0.1.3](https://github.com/kpanic/forecastr/tree/0.1.3) (2018-04-08)
+[Full Changelog](https://github.com/kpanic/forecastr/compare/0.1.2...0.1.3)
+
 ## [0.1.2](https://github.com/kpanic/forecastr/tree/0.1.2) (2018-04-08)
-
-**Work in progress features**
-
-- PNG renderer
-- ASCII renderer
-
 **Merged pull requests:**
 
 - Add credo [\#5](https://github.com/kpanic/forecastr/pull/5) ([kpanic](https://github.com/kpanic))
