@@ -1,4 +1,5 @@
-# Forecastr ![Build Status](https://secure.travis-ci.org/kpanic/forecastr.png?branch=master "Build Status")
+# Forecastr ![Build Status](https://secure.travis-ci.org/kpanic/forecastr.png?branch=master "Build Status") ![Package Version](https://img.shields.io/hexpm/v/forecastr.svg "Package Version")
+
 
 Forecastr is an open source Weather API wrapper for OpenWeatherMap.
 
@@ -60,7 +61,7 @@ by adding `forecastr` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:forecastr, "~> 0.1.3"}
+    {:forecastr, "~> 0.1"}
   ]
 end
 ```
