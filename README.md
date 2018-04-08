@@ -1,4 +1,4 @@
-# Forecastr ![Build Status](https://secure.travis-ci.org/kpanic/forecastr.png?branch=master "Build Status") ![Package Version](https://img.shields.io/hexpm/v/forecastr.svg "Package Version")
+# Forecastr ![Build Status](https://secure.travis-ci.org/kpanic/forecastr.png?branch=master "Build Status") ![Package Version](https://img.shields.io/hexpm/v/forecastr.svg "Package Version") ![License](https://img.shields.io/hexpm/l/forecastr.svg "License")
 
 
 Forecastr is an open source Weather API wrapper for OpenWeatherMap.
