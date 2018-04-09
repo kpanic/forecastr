@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.1.4](https://github.com/kpanic/forecastr/tree/0.1.4) (2018-04-09)
+[Full Changelog](https://github.com/kpanic/forecastr/compare/0.1.3...0.1.4)
+
+**Merged pull requests:**
+
+- Add naked json renderer [\#6](https://github.com/kpanic/forecastr/pull/6) ([kpanic](https://github.com/kpanic))
+
 ## [0.1.3](https://github.com/kpanic/forecastr/tree/0.1.3) (2018-04-08)
 [Full Changelog](https://github.com/kpanic/forecastr/compare/0.1.2...0.1.3)
 
