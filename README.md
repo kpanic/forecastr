@@ -63,8 +63,8 @@ Sample output for 5 days:
 - [X] Tests! (reached ~80%, good enough for now ™, however if someone feels like to add more.. ;))
 - [ ] Correct ASCII Art for the renderers that supports that (In progress)
 - [ ] PNG Renderer with transparency (In progress)
+- [ ] JSON renderer (In progress)
 - [ ] Integrate https://forecast.io as a backend?
-- [ ] JSON renderer
 
 # Thank yous
 
