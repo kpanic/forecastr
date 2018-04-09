@@ -1,5 +1,8 @@
 defmodule Forecastr.Renderer.ASCII do
-  @moduledoc false
+  @moduledoc """
+  ASCII renderer
+  Render weather ASCII art from the response of Forecastr.OWM
+  """
 
   @relevant_times %{
     "09:00:00" => "Morning",
@@ -110,10 +113,10 @@ defmodule Forecastr.Renderer.ASCII do
     962 => :codeunknown
   }
 
+  @doc "Render today weather condition"
   @type weather :: map()
   @spec render(weather) :: :ok | list()
   def render(weather)
-  @doc "Render today weather condition"
   def render(
         %{
           "name" => name,
