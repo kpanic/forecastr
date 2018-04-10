@@ -22,3 +22,7 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 forecastr-*.tar
 
+# Do not include local PLT files
+.dialyzer/*.plt
+.dialyzer/*.hash
+
