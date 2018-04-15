@@ -117,15 +117,14 @@ defmodule Forecastr.Renderer.ASCII do
   @type weather :: map()
   @spec render(weather) :: :ok | list()
   def render(weather)
-  def render(
-        %{
-          "name" => name,
-          "sys" => %{"country" => country},
-          "coord" => %{"lat" => lat, "lon" => lon},
-          "weather" => weather,
-          "main" => %{"temp" => temp, "temp_max" => temp_max, "temp_min" => temp_min}
-        }
-      ) do
+
+  def render(%{
+        "name" => name,
+        "sys" => %{"country" => country},
+        "coord" => %{"lat" => lat, "lon" => lon},
+        "weather" => weather,
+        "main" => %{"temp" => temp, "temp_max" => temp_max, "temp_min" => temp_min}
+      }) do
     %{"description" => main_weather_condition, "id" => weather_id} = extract_main_weather(weather)
     weather_code = Map.get(@weather_codes, weather_id, :codeunknown)
 
@@ -145,16 +144,14 @@ defmodule Forecastr.Renderer.ASCII do
   end
 
   @doc "Render five days weather condition"
-  def render(
-        %{
-          "city" => %{
-            "name" => name,
-            "country" => country,
-            "coord" => %{"lat" => lat, "lon" => lon}
-          },
-          "list" => forecast_list
-        }
-      )
+  def render(%{
+        "city" => %{
+          "name" => name,
+          "country" => country,
+          "coord" => %{"lat" => lat, "lon" => lon}
+        },
+        "list" => forecast_list
+      })
       when is_list(forecast_list) do
     forecasts =
       forecast_list
@@ -169,7 +166,8 @@ defmodule Forecastr.Renderer.ASCII do
         ~s(Weather report: #{name}, #{country}\n),
         ~s(lat: #{lat}, lon: #{lon}\n),
         "\n"
-      ] | [forecasts]
+      ]
+      | [forecasts]
     ]
   end
 
@@ -400,15 +398,14 @@ defmodule Forecastr.Renderer.ASCII do
   defp concat_ascii_with_weather_info(ascii_subset, weather_info, ascii_art_longest_line) do
     blank_space = 1
 
-    Enum.map(
-      Stream.zip(ascii_subset, weather_info), fn {ascii, weather} ->
-        current_length = String.length(ascii)
-        additional_blank_spaces = ascii_art_longest_line - current_length + blank_space
-        to_pad = current_length + additional_blank_spaces
+    Enum.map(Stream.zip(ascii_subset, weather_info), fn {ascii, weather} ->
+      current_length = String.length(ascii)
+      additional_blank_spaces = ascii_art_longest_line - current_length + blank_space
+      to_pad = current_length + additional_blank_spaces
 
-        ascii
-        |> String.pad_trailing(to_pad)
-        |> Kernel.<>(weather)
+      ascii
+      |> String.pad_trailing(to_pad)
+      |> Kernel.<>(weather)
     end)
   end
 

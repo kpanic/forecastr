@@ -21,8 +21,15 @@ defmodule Forecastr do
 
   @type renderer :: Forecastr.Renderer.ASCII | Forecastr.Renderer.PNG
   @type when_to_forecast :: :today | :in_five_days
-  @spec forecast(when_to_forecast, String.t(), map(), renderer) :: {:ok, binary()} | {:ok, list(binary())} | {:error, atom()}
-  def forecast(when_to_forecast, query, params \\ %{units: :metric}, renderer \\ Forecastr.Renderer.ASCII)
+  @spec forecast(when_to_forecast, String.t(), map(), renderer) ::
+          {:ok, binary()} | {:ok, list(binary())} | {:error, atom()}
+  def forecast(
+        when_to_forecast,
+        query,
+        params \\ %{units: :metric},
+        renderer \\ Forecastr.Renderer.ASCII
+      )
+
   def forecast(_when_to_forecast, "", _params, _renderer), do: {:error, :not_found}
 
   def forecast(when_to_forecast, query, params, renderer) do

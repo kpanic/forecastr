@@ -1,5 +1,4 @@
 defmodule Forecastr.Renderer.JSON do
-
   @moduledoc """
   JSON "renderer".
   Currently it just returns what the OWM API will return
