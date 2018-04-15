@@ -31,7 +31,7 @@ defmodule Forecastr.MixProject do
 
   defp deps do
     [
-      {:httpoison, "~> 1.0"},
+      {:httpoison, "~> 1.1"},
       {:poison, "~> 3.1"},
       {:table, "~> 0.0.5"},
       {:dialyxir, "~> 0.5.1", only: [:dev], runtime: false},
