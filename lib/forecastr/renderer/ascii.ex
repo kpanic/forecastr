@@ -4,6 +4,8 @@ defmodule Forecastr.Renderer.ASCII do
   Render weather ASCII art from the response of Forecastr.OWM
   """
 
+  alias Forecastr.Renderer.Colours
+
   @relevant_times %{
     "09:00:00" => "Morning",
     "12:00:00" => "Noon",
@@ -348,11 +350,11 @@ defmodule Forecastr.Renderer.ASCII do
 
   def ascii_for(:codesunny) do
     """
-      \\   /
-       .-.
-    ‒ (   ) ‒
-       `-᾿
-      /   \\
+      #{Colours.bright_yellow(:ansi)}\\   /#{Colours.reset(:ansi)}
+       #{Colours.bright_yellow(:ansi)}.-.#{Colours.reset(:ansi)}
+    #{Colours.bright_yellow(:ansi)}‒ (   ) ‒#{Colours.reset(:ansi)}
+       #{Colours.bright_yellow(:ansi)}`-᾿#{Colours.reset(:ansi)}
+      #{Colours.bright_yellow(:ansi)}/   \\#{Colours.reset(:ansi)}
     """
   end
 
