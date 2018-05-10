@@ -5,7 +5,7 @@ defmodule Forecastr.Renderer.Colours do
 
   alias IO.ANSI
 
-  def bright_yellow(:ascii), do: []
+  def bright_yellow(:ascii), do: ""
 
   def bright_yellow(:ansi) do
     [ANSI.bright(), ANSI.yellow()]
@@ -15,7 +15,7 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="yellow">)]
   end
 
-  def yellow(:ascii), do: []
+  def yellow(:ascii), do: ""
 
   def yellow(:ansi) do
     [ANSI.yellow()]
@@ -25,7 +25,7 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="yellow">)]
   end
 
-  def magenta(:ascii), do: []
+  def magenta(:ascii), do: ""
 
   def magenta(:ansi) do
     [ANSI.light_magenta()]
@@ -35,7 +35,7 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="magenta">)]
   end
 
-  def white(:ascii), do: []
+  def white(:ascii), do: ""
 
   def white(:ansi) do
     [ANSI.white()]
@@ -45,7 +45,7 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="white">)]
   end
 
-  def light_white(:ascii), do: []
+  def light_white(:ascii), do: ""
 
   def light_white(:ansi) do
     [ANSI.light_white()]
@@ -55,7 +55,7 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="white">)]
   end
 
-  def blue(:ascii), do: []
+  def blue(:ascii), do: ""
 
   def blue(:ansi) do
     [ANSI.blue()]
@@ -65,7 +65,7 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="blue">)]
   end
 
-  def normal(:ascii), do: []
+  def normal(:ascii), do: ""
 
   def normal(:ansi) do
     [ANSI.normal()]
@@ -75,7 +75,7 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="gray">)]
   end
 
-  def reset(:ascii), do: []
+  def reset(:ascii), do: ""
 
   def reset(:ansi) do
     ANSI.reset()
