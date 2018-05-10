@@ -18,7 +18,7 @@ defmodule Forecastr.Renderer.PNG do
   @spec render(map()) :: String.t()
   def render(map = %{"name" => city_name}) do
     map
-    |> Forecastr.Renderer.ASCII.render()
+    |> Forecastr.Renderer.ASCII.render(:png)
     |> render_png(city_name)
   end
 
@@ -28,19 +28,28 @@ defmodule Forecastr.Renderer.PNG do
   @spec render_png(list(), String.t()) :: String.t()
   def render_png(ascii, city_name) when is_list(ascii) do
     city_name = String.downcase(city_name)
+    ascii = ["<tt>", ascii, "</tt>"]
 
     filename = "#{city_name}.png"
     path = Application.fetch_env!(:forecastr, :image_path)
 
     %Mogrify.Image{path: filename, ext: "png"}
     |> custom("size", "280x280")
-    |> canvas("black")
-    |> custom("gravity", "center")
+    |> custom("background", "#000000")
     |> custom("fill", "white")
     |> custom("font", "DejaVu-Sans-Mono-Bold")
-    |> custom("draw", "text 0,0 '#{ascii}'")
+    |> prepare_ascii_for_pango(ascii)
     |> create(path: path)
 
     filename
+  end
+
+  defp prepare_ascii_for_pango(image, ascii) do
+    ascii = Enum.map(List.flatten(ascii), fn element ->
+      String.replace(element, "\\", "\\\\")
+    end)
+
+    image
+    |> custom("pango", "#{ascii}")
   end
 end
