@@ -119,7 +119,7 @@ defmodule Forecastr.Renderer.ASCII do
   @type weather :: map()
   @type output_type :: :ansi | :png
   @spec render(weather, output_type) :: :ok | list()
-  def render(weather, output_type \\ :ansi)
+  def render(weather, output_type \\ :ascii)
 
   def render(%{
         "name" => name,
@@ -499,6 +499,7 @@ defmodule Forecastr.Renderer.ASCII do
     time
   end
 
+  def table(data, :ascii), do: Table.table(data, :unicode)
   def table(data, :ansi), do: Table.table(data, :unicode)
   def table(data, _), do: data
 end
