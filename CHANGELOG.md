@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.1.5](https://github.com/kpanic/forecastr/tree/0.1.5) (2018-05-10)
+[Full Changelog](https://github.com/kpanic/forecastr/compare/0.1.4...0.1.5)
+
+**Merged pull requests:**
+
+- Create ansi renderer [\#9](https://github.com/kpanic/forecastr/pull/9) ([kpanic](https://github.com/kpanic))
+- Add colours support to ASCII art and PNG renderer [\#8](https://github.com/kpanic/forecastr/pull/8) ([kpanic](https://github.com/kpanic))
+- Fix dialyzer failure when missing an required dir [\#7](https://github.com/kpanic/forecastr/pull/7) ([tgrk](https://github.com/tgrk))
+
 ## [0.1.4](https://github.com/kpanic/forecastr/tree/0.1.4) (2018-04-09)
 [Full Changelog](https://github.com/kpanic/forecastr/compare/0.1.3...0.1.4)
 
