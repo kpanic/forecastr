@@ -46,6 +46,10 @@ config :forecastr,
 
 Samples of output for today's forecast
 
+```elixir
+Forecastr.forecast(:today, "lima", %{units: :metric}, Forecastr.Renderer.PNG)
+```
+
 ![today](today.png)
 ![berlin](berlin.png)
 
