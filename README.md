@@ -44,9 +44,10 @@ config :forecastr,
   ttl: 10 * 60_000
 ```
 
-Sample output for today's forecast
+Samples of output for today's forecast
 
 ![today](today.png)
+![berlin](berlin.png)
 
 Sample output for 5 days:
 
