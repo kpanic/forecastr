@@ -15,6 +15,10 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="yellow">)]
   end
 
+  def bright_yellow(:html) do
+    [~S(<span style="color: yellow">)]
+  end
+
   def yellow(:ascii), do: ""
 
   def yellow(:ansi) do
@@ -23,6 +27,10 @@ defmodule Forecastr.Renderer.Colours do
 
   def yellow(:png) do
     [~S(<span foreground="yellow">)]
+  end
+
+  def yellow(:html) do
+    [~S(<span style="color: yellow">)]
   end
 
   def magenta(:ascii), do: ""
@@ -45,6 +53,10 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="white">)]
   end
 
+  def white(:html) do
+    [~S(<span style="color: white">)]
+  end
+
   def light_white(:ascii), do: ""
 
   def light_white(:ansi) do
@@ -53,6 +65,10 @@ defmodule Forecastr.Renderer.Colours do
 
   def light_white(:png) do
     [~S(<span foreground="white">)]
+  end
+
+  def light_white(:html) do
+    [~S(<span style="color: white">)]
   end
 
   def blue(:ascii), do: ""
@@ -65,6 +81,10 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="blue">)]
   end
 
+  def blue(:html) do
+    [~S(<span style="color: blue">)]
+  end
+
   def normal(:ascii), do: ""
 
   def normal(:ansi) do
@@ -75,6 +95,10 @@ defmodule Forecastr.Renderer.Colours do
     [~S(<span foreground="gray">)]
   end
 
+  def normal(:html) do
+    [~S(<span style="color: gray">)]
+  end
+
   def reset(:ascii), do: ""
 
   def reset(:ansi) do
@@ -82,6 +106,10 @@ defmodule Forecastr.Renderer.Colours do
   end
 
   def reset(:png) do
+    "</span>"
+  end
+
+  def reset(:html) do
     "</span>"
   end
 end
