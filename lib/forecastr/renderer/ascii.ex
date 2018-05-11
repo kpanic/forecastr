@@ -501,5 +501,6 @@ defmodule Forecastr.Renderer.ASCII do
 
   def table(data, :ascii), do: Table.table(data, :unicode)
   def table(data, :ansi), do: Table.table(data, :unicode)
+  def table(data, :html), do: Table.table(data, :unicode)
   def table(data, _), do: data
 end
