@@ -33,7 +33,7 @@ defmodule Forecastr.MixProject do
     [
       {:httpoison, "~> 1.1"},
       {:poison, "~> 3.1"},
-      {:elbat, github: "kpanic/elbat"},
+      {:elbat, "~> 0.0.6"},
       {:dialyxir, "~> 1.0.0-rc.3", only: [:dev], runtime: false},
       {:credo, "~> 0.9.0-rc1", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.8", only: :test},
