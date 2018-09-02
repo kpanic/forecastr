@@ -45,9 +45,10 @@ defmodule Forecastr.Renderer.PNG do
   end
 
   defp prepare_ascii_for_pango(image, ascii) do
-    ascii = Enum.map(List.flatten(ascii), fn element ->
-      String.replace(element, "\\", "\\\\")
-    end)
+    ascii =
+      Enum.map(List.flatten(ascii), fn element ->
+        String.replace(element, "\\", "\\\\")
+      end)
 
     image
     |> custom("pango", "#{ascii}")

@@ -1,13 +1,13 @@
 sudo: required
 language: elixir
 elixir:
-  - 1.6.4
+  - 1.7.3
 otp_release:
   - '20.3'
 script:
   - mix test
   - mix credo
-  - mix dialyzer --plt
+  - "travis_wait 30 mix dialyzer --plt"
   - mix dialyzer --halt-exit-status
 cache:
   - directories:
