@@ -499,8 +499,8 @@ defmodule Forecastr.Renderer.ASCII do
     time
   end
 
-  def table(data, :ascii), do: Table.table(data, :unicode)
-  def table(data, :ansi), do: Table.table(data, :unicode)
-  def table(data, :html), do: Table.table(data, :unicode)
+  def table(data, :ascii), do: Elbat.table(data, :unicode)
+  def table(data, :ansi), do: Elbat.table(data, :unicode)
+  def table(data, :html), do: Elbat.table(data, :unicode)
   def table(data, _), do: data
 end

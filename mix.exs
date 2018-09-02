@@ -5,7 +5,7 @@ defmodule Forecastr.MixProject do
     [
       app: :forecastr,
       version: "0.1.5",
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       description: description(),
       package: package(),
       start_permanent: Mix.env() == :prod,
@@ -33,8 +33,8 @@ defmodule Forecastr.MixProject do
     [
       {:httpoison, "~> 1.1"},
       {:poison, "~> 3.1"},
-      {:table, "~> 0.0.5"},
-      {:dialyxir, "~> 0.5.1", only: [:dev], runtime: false},
+      {:elbat, github: "kpanic/elbat"},
+      {:dialyxir, "~> 1.0.0-rc.3", only: [:dev], runtime: false},
       {:credo, "~> 0.9.0-rc1", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.8", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev},
