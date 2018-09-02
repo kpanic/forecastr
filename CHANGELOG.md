@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.1.6](https://github.com/kpanic/forecastr/tree/0.1.6) (2018-09-02)
+[Full Changelog](https://github.com/kpanic/forecastr/compare/0.1.5...0.1.6)
+
+**Merged pull requests:**
+
+- Move to elbat [\#11](https://github.com/kpanic/forecastr/pull/11) ([kpanic](https://github.com/kpanic))
+- Add HTML renderer [\#10](https://github.com/kpanic/forecastr/pull/10) ([kpanic](https://github.com/kpanic))
+
 ## [0.1.5](https://github.com/kpanic/forecastr/tree/0.1.5) (2018-05-10)
 [Full Changelog](https://github.com/kpanic/forecastr/compare/0.1.4...0.1.5)
 
