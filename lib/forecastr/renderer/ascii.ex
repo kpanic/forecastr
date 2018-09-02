@@ -121,13 +121,16 @@ defmodule Forecastr.Renderer.ASCII do
   @spec render(weather, output_type) :: :ok | list()
   def render(weather, output_type \\ :ascii)
 
-  def render(%{
-        "name" => name,
-        "sys" => %{"country" => country},
-        "coord" => %{"lat" => lat, "lon" => lon},
-        "weather" => weather,
-        "main" => %{"temp" => temp, "temp_max" => temp_max, "temp_min" => temp_min}
-      }, output_type) do
+  def render(
+        %{
+          "name" => name,
+          "sys" => %{"country" => country},
+          "coord" => %{"lat" => lat, "lon" => lon},
+          "weather" => weather,
+          "main" => %{"temp" => temp, "temp_max" => temp_max, "temp_min" => temp_min}
+        },
+        output_type
+      ) do
     %{"description" => main_weather_condition, "id" => weather_id} = extract_main_weather(weather)
     weather_code = Map.get(@weather_codes, weather_id, :codeunknown)
 
@@ -152,14 +155,17 @@ defmodule Forecastr.Renderer.ASCII do
   end
 
   @doc "Render five days weather condition"
-  def render(%{
-        "city" => %{
-          "name" => name,
-          "country" => country,
-          "coord" => %{"lat" => lat, "lon" => lon}
+  def render(
+        %{
+          "city" => %{
+            "name" => name,
+            "country" => country,
+            "coord" => %{"lat" => lat, "lon" => lon}
+          },
+          "list" => forecast_list
         },
-        "list" => forecast_list
-      }, output_type)
+        output_type
+      )
       when is_list(forecast_list) do
     forecasts =
       forecast_list
@@ -179,20 +185,32 @@ defmodule Forecastr.Renderer.ASCII do
     ]
   end
 
-  defp determine_max_length(ascii_list), do: ascii_list |> Stream.map(&String.length/1) |> Enum.max()
+  defp determine_max_length(ascii_list),
+    do: ascii_list |> Stream.map(&String.length/1) |> Enum.max()
 
-  def append_reset_colours(ascii_list, output_type), do: Enum.map(ascii_list,
+  def append_reset_colours(ascii_list, output_type),
+    do:
+      Enum.map(
+        ascii_list,
         fn line ->
           case String.trim(line) do
             # Do not reset blank lines, we have no opening
             "" -> line
             _ -> line <> reset(output_type)
           end
-        end)
+        end
+      )
 
   # TODO: re-organize weather info with humidity etc
   # We should pass a map as a parameter
-  def append_weather_info(ascii_art_list, ascii_list, description, temperature, temp_max, temp_min) do
+  def append_weather_info(
+        ascii_art_list,
+        ascii_list,
+        description,
+        temperature,
+        temp_max,
+        temp_min
+      ) do
     # The weather information to append to the ASCII art
     weather_info = [
       "#{description}     ",
@@ -309,8 +327,12 @@ defmodule Forecastr.Renderer.ASCII do
     #{white(output_type)}  .-.
     #{white(output_type)} (   ).
     #{white(output_type)}(___(__)
-    #{blue(output_type)} ʻ#{reset(output_type)}#{light_white(output_type)} *#{reset(output_type)} ʻ #{light_white(output_type)}*
-    #{light_white(output_type)}*#{reset(output_type)}#{blue(output_type)} ʻ#{reset(output_type)} *#{blue(output_type)} ʻ
+    #{blue(output_type)} ʻ#{reset(output_type)}#{light_white(output_type)} *#{reset(output_type)} ʻ #{
+      light_white(output_type)
+    }*
+    #{light_white(output_type)}*#{reset(output_type)}#{blue(output_type)} ʻ#{reset(output_type)} *#{
+      blue(output_type)
+    } ʻ
     """
   end
 
@@ -319,8 +341,12 @@ defmodule Forecastr.Renderer.ASCII do
     #{yellow(output_type)}_`/\"\"#{white(output_type)}.-.
     #{yellow(output_type)} ,\\_#{white(output_type)}\(   ).
     #{yellow(output_type)}  /#{reset(output_type)}#{white(output_type)}(___(__)
-    #{blue(output_type)}   ʻ#{reset(output_type)}#{white(output_type)} *#{blue(output_type)} ʻ#{reset(output_type)}#{white(output_type)} *
-    #{white(output_type)}  *#{reset(output_type)}#{blue(output_type)} ʻ#{reset(output_type)}#{white(output_type)} *#{reset(output_type)}#{blue(output_type)} ʻ
+    #{blue(output_type)}   ʻ#{reset(output_type)}#{white(output_type)} *#{blue(output_type)} ʻ#{
+      reset(output_type)
+    }#{white(output_type)} *
+    #{white(output_type)}  *#{reset(output_type)}#{blue(output_type)} ʻ#{reset(output_type)}#{
+      white(output_type)
+    } *#{reset(output_type)}#{blue(output_type)} ʻ
     """
   end
 
@@ -368,8 +394,14 @@ defmodule Forecastr.Renderer.ASCII do
     #{white(output_type)}    .-.
     #{white(output_type)}   (   ).
     #{white(output_type)}  (___(__)
-    #{blue(output_type)}‚ʻ#{reset(output_type)}#{bright_yellow(output_type)}⚡#{reset(output_type)}#{blue(output_type)}ʻ‚#{reset(output_type)}#{bright_yellow(output_type)}⚡#{reset(output_type)}#{blue(output_type)}‚ʻ
-    #{blue(output_type)}‚ʻ‚ʻ#{reset(output_type)}#{bright_yellow(output_type)}⚡#{reset(output_type)}#{blue(output_type)}ʻ‚ʻ
+    #{blue(output_type)}‚ʻ#{reset(output_type)}#{bright_yellow(output_type)}⚡#{reset(output_type)}#{
+      blue(output_type)
+    }ʻ‚#{reset(output_type)}#{bright_yellow(output_type)}⚡#{reset(output_type)}#{
+      blue(output_type)
+    }‚ʻ
+    #{blue(output_type)}‚ʻ‚ʻ#{reset(output_type)}#{bright_yellow(output_type)}⚡#{
+      reset(output_type)
+    }#{blue(output_type)}ʻ‚ʻ
     """
   end
 
@@ -378,7 +410,9 @@ defmodule Forecastr.Renderer.ASCII do
     #{yellow(output_type)}_`/\"\"#{reset(output_type)}#{white(output_type)}.-.
     #{yellow(output_type)} ,\\#{reset(output_type)}#{white(output_type)}_(   ).
     #{yellow(output_type)} /#{reset(output_type)}#{white(output_type)}(___(__)
-    #{bright_yellow(output_type)}  ⚡#{reset(output_type)}#{blue(output_type)}ʻ ʻ#{reset(output_type)}#{bright_yellow(output_type)}⚡ʻ
+    #{bright_yellow(output_type)}  ⚡#{reset(output_type)}#{blue(output_type)}ʻ ʻ#{
+      reset(output_type)
+    }#{bright_yellow(output_type)}⚡ʻ
     #{blue(output_type)} ʻ ʻ ʻ ʻ
     """
   end
@@ -388,7 +422,9 @@ defmodule Forecastr.Renderer.ASCII do
     #{yellow(output_type)}_`/\"\"#{reset(output_type)}.-.
     #{yellow(output_type)} ,\\#{reset(output_type)}_(   ).
     #{yellow(output_type)} /#{reset(output_type)}(___(__)
-    #{light_white(output_type)}   *#{reset(output_type)}#{bright_yellow(output_type)}⚡#{reset(output_type)}#{light_white(output_type)} *#{reset(output_type)}#{bright_yellow(output_type)}⚡
+    #{light_white(output_type)}   *#{reset(output_type)}#{bright_yellow(output_type)}⚡#{
+      reset(output_type)
+    }#{light_white(output_type)} *#{reset(output_type)}#{bright_yellow(output_type)}⚡
     #{light_white(output_type)}   *  *  *
     """
   end
@@ -412,20 +448,20 @@ defmodule Forecastr.Renderer.ASCII do
     ascii_art_subset = Enum.slice(ascii_art_list, 0..weather_length)
     ascii_subset = Enum.slice(ascii_list, 0..weather_length)
 
-    Enum.map(
-      Stream.zip([ascii_art_subset, weather_info, ascii_subset]), fn {ascii_art, weather, ascii} ->
-        unicode_count =
-          @unicode_range
-          |> Regex.scan(ascii)
-          |> List.flatten()
-          |> Enum.count()
+    Enum.map(Stream.zip([ascii_art_subset, weather_info, ascii_subset]), fn {ascii_art, weather,
+                                                                             ascii} ->
+      unicode_count =
+        @unicode_range
+        |> Regex.scan(ascii)
+        |> List.flatten()
+        |> Enum.count()
 
-        ascii_length = String.length(ascii)
-        to_pad = ascii_max_line_length - ascii_length - unicode_count + blank_space
-        padding = String.duplicate(" ",  to_pad)
+      ascii_length = String.length(ascii)
+      to_pad = ascii_max_line_length - ascii_length - unicode_count + blank_space
+      padding = String.duplicate(" ", to_pad)
 
-        "#{ascii_art}#{padding}#{weather}"
-      end)
+      "#{ascii_art}#{padding}#{weather}"
+    end)
   end
 
   defp prepare_forecasts_for_rendering(forecasts, output_type) do
