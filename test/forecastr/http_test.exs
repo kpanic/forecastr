@@ -2,7 +2,7 @@ defmodule Forecastr.HTTPTest do
   use ExUnit.Case
 
   test "process_url prepend http://" do
-    assert "http://sorry-i-am-late.at" == Forecastr.HTTP.process_url("sorry-i-am-late.at")
+    assert "http://sorry-i-am-late.at" == Forecastr.HTTP.process_request_url("sorry-i-am-late.at")
   end
 
   test "process_request_options returns more params" do
