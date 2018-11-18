@@ -14,6 +14,16 @@ defmodule Forecastr.Renderer.ASCII do
     "00:00:00" => "Night"
   }
 
+  @weekdays %{
+    1 => "Mon",
+    2 => "Tue",
+    3 => "Wed",
+    4 => "Thu",
+    5 => "Fri",
+    6 => "Sat",
+    7 => "Sun"
+  }
+
   @weather_codes %{
     200 => :codethunderyshowers,
     201 => :codethunderyshowers,
@@ -467,6 +477,14 @@ defmodule Forecastr.Renderer.ASCII do
   defp prepare_forecasts_for_rendering(forecasts, output_type) do
     forecasts
     |> Enum.map(fn {date, forecasts} ->
+      day =
+        Map.get(
+          @weekdays,
+          date
+          |> Date.from_iso8601!()
+          |> Date.day_of_week()
+        )
+
       forecasts =
         forecasts
         |> Enum.reduce([], fn %{
@@ -502,7 +520,7 @@ defmodule Forecastr.Renderer.ASCII do
         end)
         |> Enum.reverse()
 
-      [table([date], output_type), table([forecasts], output_type)]
+      [table([[day, date]], output_type), table([forecasts], output_type)]
     end)
   end
 
