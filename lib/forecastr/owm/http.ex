@@ -1,4 +1,4 @@
-defmodule Forecastr.HTTP do
+defmodule Forecastr.OWM.HTTP do
   @moduledoc false
 
   use HTTPoison.Base

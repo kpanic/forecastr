@@ -11,7 +11,7 @@ defmodule Forecastr.OWM do
   @spec fetch_weather_information(binary(), map()) :: {:ok, map()} | {:error, atom()}
   def fetch_weather_information(endpoint, opts) do
     with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
-           Forecastr.HTTP.get(endpoint, [], params: opts) do
+           Forecastr.OWM.HTTP.get(endpoint, [], params: opts) do
       {:ok, Poison.decode!(body)}
     else
       {:ok, %HTTPoison.Response{status_code: 404}} ->
