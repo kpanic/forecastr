@@ -19,9 +19,14 @@ defmodule Forecastr do
   Forecastr.forecast(:today, "Lima", %{units: :imperial}, Forecastr.Renderer.PNG)
   """
 
-  @type renderer :: Forecastr.Renderer.ASCII | Forecastr.Renderer.PNG
+  @type renderer ::
+          Forecastr.Renderer.ASCII
+          | Forecastr.Renderer.ANSI
+          | Forecastr.Renderer.HTML
+          | Forecastr.Renderer.JSON
+          | Forecastr.Renderer.PNG
   @type when_to_forecast :: :today | :in_five_days
-  @spec forecast(when_to_forecast, String.t(), map(), renderer) ::
+  @spec forecast(when_to_forecast, query :: String.t(), params :: map(), renderer) ::
           {:ok, binary()} | {:ok, list(binary())} | {:error, atom()}
   def forecast(
         when_to_forecast,
@@ -40,11 +45,7 @@ defmodule Forecastr do
     end
   end
 
-  @type response :: map()
-  @type query :: String.t()
-  @spec perform_query(query, when_to_forecast, map()) :: {:ok, response} | {:error, atom()}
-  @doc false
-  def perform_query(query, when_to_forecast, params) do
+  defp perform_query(query, when_to_forecast, params) do
     with {:ok, :miss} <- fetch_from_cache(when_to_forecast, query),
          {:ok, response} <- fetch_from_backend(when_to_forecast, query, params),
          :ok <- Forecastr.Cache.set(when_to_forecast, query, response) do
@@ -55,19 +56,19 @@ defmodule Forecastr do
     end
   end
 
-  @spec fetch_from_cache(when_to_forecast, query) :: {:ok, :miss} | {:ok, map()}
-  @doc false
-  def fetch_from_cache(when_to_forecast, query) do
+  defp fetch_from_cache(when_to_forecast, query) do
     case Forecastr.Cache.get(when_to_forecast, query) do
       nil -> {:ok, :miss}
       response -> {:ok, response}
     end
   end
 
-  @spec fetch_from_backend(when_to_forecast, query, map()) :: {:ok, response}
-  @doc false
-  def fetch_from_backend(when_to_forecast, query, params) do
+  defp fetch_from_backend(when_to_forecast, query, params) do
     backend = Application.get_env(:forecastr, :backend)
-    backend.weather(when_to_forecast, query, params)
+
+    with {:ok, weather} <- backend.weather(when_to_forecast, query, params),
+         {:ok, normalized_weather} <- backend.normalize(weather) do
+      {:ok, normalized_weather}
+    end
   end
 end
