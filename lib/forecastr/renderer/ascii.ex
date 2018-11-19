@@ -134,14 +134,16 @@ defmodule Forecastr.Renderer.ASCII do
   def render(
         %{
           "name" => name,
-          "sys" => %{"country" => country},
-          "coord" => %{"lat" => lat, "lon" => lon},
-          "weather" => weather,
-          "main" => %{"temp" => temp, "temp_max" => temp_max, "temp_min" => temp_min}
+          "country" => country,
+          "coordinates" => %{"lat" => lat, "lon" => lon},
+          "temp" => temp,
+          "temp_max" => temp_max,
+          "temp_min" => temp_min,
+          "id" => weather_id,
+          "description" => main_weather_condition
         },
         output_type
       ) do
-    %{"description" => main_weather_condition, "id" => weather_id} = extract_main_weather(weather)
     weather_code = Map.get(@weather_codes, weather_id, :codeunknown)
 
     bare_ascii =
@@ -167,11 +169,9 @@ defmodule Forecastr.Renderer.ASCII do
   @doc "Render five days weather condition"
   def render(
         %{
-          "city" => %{
-            "name" => name,
-            "country" => country,
-            "coord" => %{"lat" => lat, "lon" => lon}
-          },
+          "name" => name,
+          "country" => country,
+          "coordinates" => %{"lat" => lat, "lon" => lon},
           "list" => forecast_list
         },
         output_type
@@ -488,18 +488,14 @@ defmodule Forecastr.Renderer.ASCII do
       forecasts =
         forecasts
         |> Enum.reduce([], fn %{
-                                "weather" => weather,
                                 "dt_txt" => date_time,
-                                "main" => %{
-                                  "temp" => temp,
-                                  "temp_max" => temp_max,
-                                  "temp_min" => temp_min
-                                }
+                                "temp" => temp,
+                                "temp_max" => temp_max,
+                                "temp_min" => temp_min,
+                                "description" => main_weather_condition,
+                                "id" => weather_id
                               },
                               acc ->
-          %{"description" => main_weather_condition, "id" => weather_id} =
-            extract_main_weather(weather)
-
           weather_code = Map.get(@weather_codes, weather_id, :codeunknown)
           time = extract_time(date_time)
           period_of_the_day = Map.get(@relevant_times, time)
@@ -540,10 +536,6 @@ defmodule Forecastr.Renderer.ASCII do
       time = extract_time(element["dt_txt"])
       time in Map.keys(@relevant_times) == true
     end)
-  end
-
-  defp extract_main_weather(weather) do
-    List.first(weather)
   end
 
   defp extract_time(date) do
