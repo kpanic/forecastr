@@ -90,20 +90,21 @@ defmodule ForecastrTest do
   def today_weather do
     %{
       "name" => "Wonderland",
-      "sys" => %{"country" => "Wonderland"},
-      "coord" => %{"lat" => 52.52, "lon" => 13.39},
-      "weather" => [%{"description" => "sunny", "id" => 200}],
-      "main" => %{"temp" => 7, "temp_max" => 7, "temp_min" => 7}
+      "country" => "Wonderland",
+      "coordinates" => %{"lat" => 52.52, "lon" => 13.39},
+      "description" => "sunny",
+      "id" => 200,
+      "temp" => 7,
+      "temp_max" => 7,
+      "temp_min" => 7
     }
   end
 
   def five_days_weather do
     %{
-      "city" => %{
-        "coord" => %{"lat" => 52.52, "lon" => 13.39},
-        "country" => "Wonderland",
-        "name" => "Wonderland"
-      },
+      "coordinates" => %{"lat" => 52.52, "lon" => 13.39},
+      "country" => "Wonderland",
+      "name" => "Wonderland",
       "list" => []
     }
   end
