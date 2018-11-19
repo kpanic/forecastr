@@ -7,17 +7,29 @@ defmodule ForecastrTest do
     def weather(_when_to_forecast, _city, _params) do
       {:ok, ForecastrTest.today_weather()}
     end
+
+    def normalize(pass_through) do
+      {:ok, pass_through}
+    end
   end
 
   defmodule OWMBackendFiveDays do
     def weather(_when_to_forecast, _city, _params) do
       {:ok, ForecastrTest.five_days_weather()}
     end
+
+    def normalize(pass_through) do
+      {:ok, pass_through}
+    end
   end
 
   defmodule OWMBackendError do
     def weather(_when_to_forecast, _city, _params) do
       {:error, :not_found}
+    end
+
+    def normalize(pass_through) do
+      {:ok, pass_through}
     end
   end
 
