@@ -11,7 +11,7 @@ defmodule Forecastr.OWM do
   @doc """
   Normalize for today's weather
   """
-  @spec normalize(map()) :: map()
+  @spec normalize(map()) :: {:ok, map()}
   def normalize(%{
         "name" => name,
         "sys" => %{"country" => country},
