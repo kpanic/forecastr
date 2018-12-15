@@ -32,6 +32,5 @@ use Mix.Config
 config :forecastr,
   appid: System.get_env("OWM_API_KEY"),
   backend: Forecastr.OWM,
-  image_path: ".",
   # 10 minutes by default per OWM policy
   ttl: 10 * 60_000
