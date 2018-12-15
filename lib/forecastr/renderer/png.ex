@@ -6,14 +6,12 @@ defmodule Forecastr.Renderer.PNG do
   Currently the PNG is generated only from the *current* weather forecast coming
   from the Forecastr.OWM module
 
-  The PNG will be written to the file system based on the :image_path
-  Application variable.
+  The PNG will be written returned as binary buffer.
   """
   import Mogrify
 
   @doc """
-  Render a map coming from the backend (OWM API currently) to a PNG
-  Return the image name.
+  Render a map coming from the backend (OWM API currently)
   """
   @spec render(map()) :: {:ok, map()}
   def render(map = %{"name" => city_name}) do
@@ -23,7 +21,8 @@ defmodule Forecastr.Renderer.PNG do
   end
 
   @doc """
-  Render a PNG from an ascii and a city name
+  Render a map with the binary of the PNG and the name of the city from an ascii
+  and a city name
   """
   @spec render_png(list(), String.t()) :: {:ok, map()}
   def render_png(ascii, city_name) when is_list(ascii) do
