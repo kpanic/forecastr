@@ -30,18 +30,17 @@ defmodule Forecastr.Renderer.PNG do
     city_name = String.downcase(city_name)
     ascii = ["<tt>", ascii, "</tt>"]
 
-    filename = "#{city_name}.png"
-    path = Application.fetch_env!(:forecastr, :image_path)
+    image =
+      %Mogrify.Image{}
+      |> custom("size", "280x280")
+      |> custom("background", "#000000")
+      |> custom("fill", "white")
+      |> custom("font", "DejaVu-Sans-Mono-Bold")
+      |> prepare_ascii_for_pango(ascii)
+      |> custom("stdout", "png:-")
+      |> create(buffer: true)
 
-    %Mogrify.Image{path: filename, ext: "png"}
-    |> custom("size", "280x280")
-    |> custom("background", "#000000")
-    |> custom("fill", "white")
-    |> custom("font", "DejaVu-Sans-Mono-Bold")
-    |> prepare_ascii_for_pango(ascii)
-    |> create(path: path)
-
-    filename
+    {:ok, %{name: city_name, binary: image.buffer}}
   end
 
   defp prepare_ascii_for_pango(image, ascii) do
