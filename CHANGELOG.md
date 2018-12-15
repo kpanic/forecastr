@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.1.9](https://github.com/kpanic/forecastr/tree/v0.1.9) (2018-12-15)
+[Full Changelog](https://github.com/kpanic/forecastr/compare/0.1.7...v0.1.9)
+
+**Merged pull requests:**
+
+- Return a binary an a name in PNG renderer [\#12](https://github.com/kpanic/forecastr/pull/12) ([kpanic](https://github.com/kpanic))
+
 ## [0.1.7](https://github.com/kpanic/forecastr/tree/0.1.7) (2018-09-02)
 [Full Changelog](https://github.com/kpanic/forecastr/compare/0.1.6...0.1.7)
 
