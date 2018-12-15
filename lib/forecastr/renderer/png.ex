@@ -15,7 +15,7 @@ defmodule Forecastr.Renderer.PNG do
   Render a map coming from the backend (OWM API currently) to a PNG
   Return the image name.
   """
-  @spec render(map()) :: String.t()
+  @spec render(map()) :: {:ok, map()}
   def render(map = %{"name" => city_name}) do
     map
     |> Forecastr.Renderer.ASCII.render(:png)
@@ -25,7 +25,7 @@ defmodule Forecastr.Renderer.PNG do
   @doc """
   Render a PNG from an ascii and a city name
   """
-  @spec render_png(list(), String.t()) :: String.t()
+  @spec render_png(list(), String.t()) :: {:ok, map()}
   def render_png(ascii, city_name) when is_list(ascii) do
     city_name = String.downcase(city_name)
     ascii = ["<tt>", ascii, "</tt>"]
