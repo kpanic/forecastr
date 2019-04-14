@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.1.10](https://github.com/kpanic/forecastr/tree/v0.1.10) (2019-04-14)
+[Full Changelog](https://github.com/kpanic/forecastr/compare/v0.1.9...v0.1.10)
+
+**Merged pull requests:**
+
+- Introduce :ets in the worker [\#13](https://github.com/kpanic/forecastr/pull/13) ([kpanic](https://github.com/kpanic))
+
 ## [v0.1.9](https://github.com/kpanic/forecastr/tree/v0.1.9) (2018-12-15)
 [Full Changelog](https://github.com/kpanic/forecastr/compare/0.1.7...v0.1.9)
 
