@@ -54,8 +54,8 @@ defmodule Forecastr.Cache.Worker do
     Process.send_after(self(), {:purge_cache, query}, minutes)
   end
 
-  def handle_info({:purge_cache, query}, state) do
-    true = :ets.delete_object(Keyword.get(state, :name), query)
+  def handle_info({:purge_cache, query}, %{name: worker_name} = state) do
+    true = :ets.delete(worker_name, query)
     {:noreply, state}
   end
 end
