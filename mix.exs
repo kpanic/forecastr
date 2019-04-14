@@ -4,7 +4,7 @@ defmodule Forecastr.MixProject do
   def project do
     [
       app: :forecastr,
-      version: "0.1.10",
+      version: "0.1.11",
       elixir: "~> 1.7",
       description: description(),
       package: package(),
