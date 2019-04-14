@@ -5,8 +5,8 @@ defmodule Forecastr.Cache.Worker do
 
   # Client API
   @spec start_link(Keyword.t()) :: {:ok, pid()}
-  def start_link(opts) do
-    GenServer.start_link(__MODULE__, %{}, opts)
+  def start_link([name: worker_name] = opts) do
+    GenServer.start_link(__MODULE__, %{name: worker_name, timer_ref: nil}, opts)
   end
 
   @spec get(atom(), String.t()) :: map() | nil
@@ -21,27 +21,41 @@ defmodule Forecastr.Cache.Worker do
   end
 
   # Server callbacks
-  def init(state) do
+  def init(%{name: worker_name} = state) do
+    ^worker_name = :ets.new(worker_name, [:named_table])
     {:ok, state}
   end
 
-  def handle_call({:get, query}, _from, state) do
-    entry = Map.get(state, query)
+  def handle_call({:get, query}, _from, %{name: worker_name} = state) do
+    entry =
+      case :ets.lookup(worker_name, query) do
+        [] -> nil
+        [{_key, value}] -> value
+      end
+
     {:reply, entry, state}
   end
 
-  def handle_call({:set, query, response, options}, _from, state) do
-    state = Map.put(state, query, response)
-    purge_cache(query, options)
-    {:reply, :ok, state}
+  def handle_call(
+        {:set, query, response, options},
+        _from,
+        %{name: worker_name, timer_ref: timer_ref} = state
+      ) do
+    true = :ets.insert(worker_name, {query, response})
+    timer_ref = schedule_purge_cache(query, timer_ref, options)
+    {:reply, :ok, %{state | timer_ref: timer_ref}}
   end
 
-  def purge_cache(query, ttl: minutes) do
-    # Purge every N minutes
+  def schedule_purge_cache(query, nil = _timer_ref, ttl: minutes),
+    do: Process.send_after(self(), {:purge_cache, query}, minutes)
+
+  def schedule_purge_cache(query, timer_ref, ttl: minutes) do
+    Process.cancel_timer(timer_ref)
     Process.send_after(self(), {:purge_cache, query}, minutes)
   end
 
   def handle_info({:purge_cache, query}, state) do
-    {:noreply, Map.delete(state, query)}
+    true = :ets.delete_object(Keyword.get(state, :name), query)
+    {:noreply, state}
   end
 end
