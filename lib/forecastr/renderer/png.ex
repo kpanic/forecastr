@@ -14,7 +14,7 @@ defmodule Forecastr.Renderer.PNG do
   Render a map coming from the backend (OWM API currently)
   """
   @spec render(map()) :: {:ok, map()}
-  def render(map = %{"name" => city_name}) do
+  def render(%{"name" => city_name} = map) do
     map
     |> Forecastr.Renderer.ASCII.render(:png)
     |> render_png(city_name)
