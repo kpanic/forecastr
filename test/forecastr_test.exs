@@ -59,17 +59,18 @@ defmodule ForecastrTest do
   test "Forecastr.forecast cache correctly :today" do
     Application.put_env(:forecastr, :backend, OWMBackendToday)
     assert {:ok, _response} = Forecastr.forecast(:today, "Wonderland")
-    state = :sys.get_state(Forecastr.Cache.Today)
 
-    assert %{"wonderland" => today_weather()} == state
+    [state] = :ets.tab2list(Forecastr.Cache.Today)
+
+    assert {"wonderland", today_weather()} == state
   end
 
   test "Forecastr.forecast cache correctly :in_five_days" do
     Application.put_env(:forecastr, :backend, OWMBackendFiveDays)
     assert {:ok, _response} = Forecastr.forecast(:in_five_days, "Wonderland")
-    state = :sys.get_state(Forecastr.Cache.InFiveDays)
+    [state] = :ets.tab2list(Forecastr.Cache.InFiveDays)
 
-    assert %{"wonderland" => five_days_weather()} == state
+    assert {"wonderland", five_days_weather()} == state
   end
 
   test "Forecastr.forecast hits the cache when it's pre-warmed for today" do
