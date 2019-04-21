@@ -30,7 +30,7 @@ use Mix.Config
 #     import_config "#{Mix.env}.exs"
 
 config :forecastr,
-  appid: System.get_env("OWM_API_KEY"),
-  backend: Forecastr.OWM,
+  appid: System.get_env("FORECASTR_API_KEY"),
+  backend: Forecastr.Darksky,
   # 10 minutes by default per OWM policy
   ttl: 10 * 60_000
