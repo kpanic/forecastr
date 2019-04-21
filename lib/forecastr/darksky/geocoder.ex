@@ -1,5 +1,5 @@
 defmodule Forecastr.Darksky.Geocoder do
-  use HTTPoison.Base
+  @moduledoc false
 
   @endpoint "https://nominatim.openstreetmap.org"
   @format "json"
@@ -7,7 +7,7 @@ defmodule Forecastr.Darksky.Geocoder do
   def geocode(address, additional_params \\ []) do
     default_params = [q: address, format: @format, addressdetails: 1]
 
-    request("/search", default_params ++ additional_params)
+    geocode_with_osm("/search", default_params ++ additional_params)
     |> parse_request()
   end
 
@@ -15,8 +15,8 @@ defmodule Forecastr.Darksky.Geocoder do
     Poison.decode!(body)
   end
 
-  def request(path, params) do
+  defp geocode_with_osm(path, params) do
     params = Enum.into(params, %{})
-    get!(@endpoint <> path, [], params: params)
+    HTTPoison.get!(@endpoint <> path, [], params: params)
   end
 end
