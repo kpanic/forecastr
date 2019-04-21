@@ -24,107 +24,6 @@ defmodule Forecastr.Renderer.ASCII do
     7 => "Sun"
   }
 
-  @weather_codes %{
-    200 => :codethunderyshowers,
-    201 => :codethunderyshowers,
-    210 => :codethunderyshowers,
-    230 => :codethunderyshowers,
-    231 => :codethunderyshowers,
-    202 => :codethunderyheavyrain,
-    211 => :codethunderyheavyrain,
-    212 => :codethunderyheavyrain,
-    221 => :codethunderyheavyrain,
-    232 => :codethunderyheavyrain,
-    300 => :codelightrain,
-    301 => :codelightrain,
-    310 => :codelightrain,
-    311 => :codelightrain,
-    313 => :codelightrain,
-    321 => :codelightrain,
-    302 => :codeheavyrain,
-    312 => :codeheavyrain,
-    314 => :codeheavyrain,
-    500 => :codelightshowers,
-    501 => :codelightshowers,
-    502 => :codeheavyshowers,
-    503 => :codeheavyshowers,
-    504 => :codeheavyshowers,
-    511 => :codelightsleet,
-    520 => :codelightshowers,
-    521 => :codelightshowers,
-    522 => :codeheavyshowers,
-    531 => :codeheavyshowers,
-    600 => :codelightsnow,
-    601 => :codelightsnow,
-    602 => :codeheavysnow,
-    611 => :codelightsleet,
-    612 => :codelightsleetshowers,
-    615 => :codelightsleet,
-    616 => :codelightsleet,
-    620 => :codelightsnowshowers,
-    621 => :codelightsnowshowers,
-    622 => :codeheavysnowshowers,
-    701 => :codefog,
-    711 => :codefog,
-    721 => :codefog,
-    741 => :codefog,
-    # sand, dust whirls
-    731 => :codeunknown,
-    # sand
-    751 => :codeunknown,
-    # dust
-    761 => :codeunknown,
-    # volcanic ash
-    762 => :codeunknown,
-    # squalls
-    771 => :codeunknown,
-    # tornado
-    781 => :codeunknown,
-    800 => :codesunny,
-    801 => :codepartlycloudy,
-    802 => :codecloudy,
-    803 => :codeverycloudy,
-    804 => :codeverycloudy,
-    # tornado
-    900 => :codeunknown,
-    # tropical storm
-    901 => :codeunknown,
-    # hurricane
-    902 => :codeunknown,
-    # cold
-    903 => :codeunknown,
-    # hot
-    904 => :codeunknown,
-    # windy
-    905 => :codeunknown,
-    # hail
-    906 => :codeunknown,
-    # calm
-    951 => :codeunknown,
-    # light breeze
-    952 => :codeunknown,
-    # gentle breeze
-    953 => :codeunknown,
-    # moderate breeze
-    954 => :codeunknown,
-    # fresh breeze
-    955 => :codeunknown,
-    # strong breeze
-    956 => :codeunknown,
-    # high wind, near gale
-    957 => :codeunknown,
-    # gale
-    958 => :codeunknown,
-    # severe gale
-    959 => :codeunknown,
-    # storm
-    960 => :codeunknown,
-    # violent storm
-    961 => :codeunknown,
-    # hurricane
-    962 => :codeunknown
-  }
-
   @doc "Render today weather condition"
   @type weather :: map()
   @type output_type :: :ansi | :png
@@ -144,7 +43,8 @@ defmodule Forecastr.Renderer.ASCII do
         },
         output_type
       ) do
-    weather_code = Map.get(@weather_codes, weather_id, :codeunknown)
+    weather_codes = get_weather_codes_for_backend(Application.get_env(:forecastr, :backend))
+    weather_code = Map.get(weather_codes, weather_id, :codeunknown)
 
     bare_ascii =
       weather_code
@@ -496,7 +396,8 @@ defmodule Forecastr.Renderer.ASCII do
                                 "id" => weather_id
                               },
                               acc ->
-          weather_code = Map.get(@weather_codes, weather_id, :codeunknown)
+          weather_codes = get_weather_codes_for_backend(Application.get_env(:forecastr, :backend))
+          weather_code = Map.get(weather_codes, weather_id, :codeunknown)
           time = extract_time(date_time)
           period_of_the_day = Map.get(@relevant_times, time)
 
@@ -549,4 +450,122 @@ defmodule Forecastr.Renderer.ASCII do
   def table(data, :ansi), do: Elbat.table(data, :unicode)
   def table(data, :html), do: Elbat.table(data, :unicode)
   def table(data, _), do: data
+
+  # NOTE: this is a reduced set compared to OWM
+  def get_weather_codes_for_backend(Forecastr.Darksky) do
+    %{
+      "clear-day" => :codesunny,
+      "clear-night" => :codesunny,
+      "cloudy" => :codecloudy,
+      "fog" => :codefog,
+      "partly-cloudy-day" => :codepartlycloudy,
+      "partly-cloudy-night" => :codepartlycloudy,
+      "rain" => :codeheavyrain,
+      "sleet" => :codelightsleet,
+      "snow" => :codelightsnow
+    }
+  end
+
+  def get_weather_codes_for_backend(_) do
+    %{
+      200 => :codethunderyshowers,
+      201 => :codethunderyshowers,
+      210 => :codethunderyshowers,
+      230 => :codethunderyshowers,
+      231 => :codethunderyshowers,
+      202 => :codethunderyheavyrain,
+      211 => :codethunderyheavyrain,
+      212 => :codethunderyheavyrain,
+      221 => :codethunderyheavyrain,
+      232 => :codethunderyheavyrain,
+      300 => :codelightrain,
+      301 => :codelightrain,
+      310 => :codelightrain,
+      311 => :codelightrain,
+      313 => :codelightrain,
+      321 => :codelightrain,
+      302 => :codeheavyrain,
+      312 => :codeheavyrain,
+      314 => :codeheavyrain,
+      500 => :codelightshowers,
+      501 => :codelightshowers,
+      502 => :codeheavyshowers,
+      503 => :codeheavyshowers,
+      504 => :codeheavyshowers,
+      511 => :codelightsleet,
+      520 => :codelightshowers,
+      521 => :codelightshowers,
+      522 => :codeheavyshowers,
+      531 => :codeheavyshowers,
+      600 => :codelightsnow,
+      601 => :codelightsnow,
+      602 => :codeheavysnow,
+      611 => :codelightsleet,
+      612 => :codelightsleetshowers,
+      615 => :codelightsleet,
+      616 => :codelightsleet,
+      620 => :codelightsnowshowers,
+      621 => :codelightsnowshowers,
+      622 => :codeheavysnowshowers,
+      701 => :codefog,
+      711 => :codefog,
+      721 => :codefog,
+      741 => :codefog,
+      # sand, dust whirls
+      731 => :codeunknown,
+      # sand
+      751 => :codeunknown,
+      # dust
+      761 => :codeunknown,
+      # volcanic ash
+      762 => :codeunknown,
+      # squalls
+      771 => :codeunknown,
+      # tornado
+      781 => :codeunknown,
+      800 => :codesunny,
+      801 => :codepartlycloudy,
+      802 => :codecloudy,
+      803 => :codeverycloudy,
+      804 => :codeverycloudy,
+      # tornado
+      900 => :codeunknown,
+      # tropical storm
+      901 => :codeunknown,
+      # hurricane
+      902 => :codeunknown,
+      # cold
+      903 => :codeunknown,
+      # hot
+      904 => :codeunknown,
+      # windy
+      905 => :codeunknown,
+      # hail
+      906 => :codeunknown,
+      # calm
+      951 => :codeunknown,
+      # light breeze
+      952 => :codeunknown,
+      # gentle breeze
+      953 => :codeunknown,
+      # moderate breeze
+      954 => :codeunknown,
+      # fresh breeze
+      955 => :codeunknown,
+      # strong breeze
+      956 => :codeunknown,
+      # high wind, near gale
+      957 => :codeunknown,
+      # gale
+      958 => :codeunknown,
+      # severe gale
+      959 => :codeunknown,
+      # storm
+      960 => :codeunknown,
+      # violent storm
+      961 => :codeunknown,
+      # hurricane
+      962 => :codeunknown
+    }
+  end
 end
