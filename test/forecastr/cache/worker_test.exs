@@ -40,14 +40,14 @@ defmodule Forecastr.Cache.WorkerTest do
     assert :ok == Forecastr.Cache.Worker.set(Forecastr.Cache.Today, @cache_key, @response_today)
     assert Forecastr.Cache.Worker.get(Forecastr.Cache.Today, @cache_key) == @response_today
 
-    assert is_nil(Forecastr.Cache.Worker.get(Forecastr.Cache.InFiveDays, @cache_key)) == true
+    assert is_nil(Forecastr.Cache.Worker.get(Forecastr.Cache.NextDays, @cache_key)) == true
   end
 
-  test "Caching works for :in_five_days" do
+  test "Caching works for :next_days" do
     assert :ok ==
-             Forecastr.Cache.Worker.set(Forecastr.Cache.InFiveDays, @cache_key, @response_today)
+             Forecastr.Cache.Worker.set(Forecastr.Cache.NextDays, @cache_key, @response_today)
 
-    assert Forecastr.Cache.Worker.get(Forecastr.Cache.InFiveDays, @cache_key) == @response_today
+    assert Forecastr.Cache.Worker.get(Forecastr.Cache.NextDays, @cache_key) == @response_today
 
     assert is_nil(Forecastr.Cache.Worker.get(Forecastr.Cache.Today, @cache_key)) == true
   end

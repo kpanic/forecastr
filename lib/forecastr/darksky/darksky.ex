@@ -1,7 +1,7 @@
 defmodule Forecastr.Darksky do
   @moduledoc false
 
-  @type when_to_forecast :: :today | :in_five_days
+  @type when_to_forecast :: :today | :next_days
   @spec weather(when_to_forecast, String.t(), map()) :: {:ok, map()} | {:error, atom()}
   def weather(when_to_forecast, query, opts) do
     endpoint = darksky_api_endpoint(when_to_forecast)
@@ -57,7 +57,7 @@ defmodule Forecastr.Darksky do
   Normalize for 3 days weather
   """
   def normalize(%{
-        "when_to_forecast" => "in_five_days",
+        "when_to_forecast" => "next_days",
         "name" => name,
         "country" => country,
         "latitude" => lat,
@@ -127,7 +127,7 @@ defmodule Forecastr.Darksky do
   def darksky_api_endpoint(:today),
     do: "https://api.darksky.net/forecast/#{Application.get_env(:forecastr, :appid)}"
 
-  def darksky_api_endpoint(:in_five_days),
+  def darksky_api_endpoint(:next_days),
     do: "https://api.darksky.net/forecast/#{Application.get_env(:forecastr, :appid)}"
 
   defp convert_to_darksky_params(%{units: :imperial} = params), do: Map.put(params, :units, "us")

@@ -13,7 +13,7 @@ defmodule ForecastrTest do
     end
   end
 
-  defmodule OWMBackendFiveDays do
+  defmodule OWMBackendNextDays do
     def weather(_when_to_forecast, _city, _params) do
       {:ok, ForecastrTest.five_days_weather()}
     end
@@ -35,7 +35,7 @@ defmodule ForecastrTest do
 
   test "Forecast with an empty string" do
     assert {:error, :not_found} = Forecastr.forecast(:today, "")
-    assert {:error, :not_found} = Forecastr.forecast(:in_five_days, "")
+    assert {:error, :not_found} = Forecastr.forecast(:next_days, "")
   end
 
   test "Forecast for a city today" do
@@ -47,12 +47,12 @@ defmodule ForecastrTest do
   test "Forecast for a city returns an error" do
     Application.put_env(:forecastr, :backend, OWMBackendError)
     assert {:error, _} = Forecastr.forecast(:today, "Mars")
-    assert {:error, _} = Forecastr.forecast(:in_five_days, "Hale-Bopp")
+    assert {:error, _} = Forecastr.forecast(:next_days, "Hale-Bopp")
   end
 
   test "Forecast for a city in 5 days" do
-    Application.put_env(:forecastr, :backend, OWMBackendFiveDays)
-    assert {:ok, response} = Forecastr.forecast(:in_five_days, "Wonderland")
+    Application.put_env(:forecastr, :backend, OWMBackendNextDays)
+    assert {:ok, response} = Forecastr.forecast(:next_days, "Wonderland")
     assert Enum.count(response) > 0
   end
 
@@ -65,10 +65,10 @@ defmodule ForecastrTest do
     assert {"wonderland", today_weather()} == state
   end
 
-  test "Forecastr.forecast cache correctly :in_five_days" do
-    Application.put_env(:forecastr, :backend, OWMBackendFiveDays)
-    assert {:ok, _response} = Forecastr.forecast(:in_five_days, "Wonderland")
-    [state] = :ets.tab2list(Forecastr.Cache.InFiveDays)
+  test "Forecastr.forecast cache correctly :next_days" do
+    Application.put_env(:forecastr, :backend, OWMBackendNextDays)
+    assert {:ok, _response} = Forecastr.forecast(:next_days, "Wonderland")
+    [state] = :ets.tab2list(Forecastr.Cache.NextDays)
 
     assert {"wonderland", five_days_weather()} == state
   end
@@ -81,10 +81,10 @@ defmodule ForecastrTest do
   end
 
   test "Forecastr.forecast hits the cache when it's pre-warmed for five days" do
-    assert :ok = Forecastr.Cache.set(:in_five_days, "wonderland", five_days_weather())
+    assert :ok = Forecastr.Cache.set(:next_days, "wonderland", five_days_weather())
 
     # It does hit the cache, not the backend, the backend is not configured
-    assert {:ok, response} = Forecastr.forecast(:in_five_days, "wonderland")
+    assert {:ok, response} = Forecastr.forecast(:next_days, "wonderland")
     assert Enum.count(response) > 0
   end
 

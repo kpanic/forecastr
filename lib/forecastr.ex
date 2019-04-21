@@ -8,13 +8,13 @@ defmodule Forecastr do
   Forecastr.forecast(:today, query, params \\ %{}, renderer \\ Forecastr.Renderer.ASCII )
 
   # Query the OWM API for the forecast in the next 5 days
-  Forecastr.forecast(:in_five_days, query, params \\ %{}, renderer \\ Forecastr.Renderer.ASCII )
+  Forecastr.forecast(:next_days, query, params \\ %{}, renderer \\ Forecastr.Renderer.ASCII )
 
   For example:
 
   Forecastr.forecast(:today, "Berlin")
 
-  Forecastr.forecast(:in_five_days, "Berlin", %{units: :imperial})
+  Forecastr.forecast(:next_days, "Berlin", %{units: :imperial})
 
   Forecastr.forecast(:today, "Lima", %{units: :imperial}, Forecastr.Renderer.PNG)
   """
@@ -25,7 +25,7 @@ defmodule Forecastr do
           | Forecastr.Renderer.HTML
           | Forecastr.Renderer.JSON
           | Forecastr.Renderer.PNG
-  @type when_to_forecast :: :today | :in_five_days
+  @type when_to_forecast :: :today | :next_days
   @spec forecast(when_to_forecast, query :: String.t(), params :: map(), renderer) ::
           {:ok, binary()} | {:ok, list(binary())} | {:error, atom()}
   def forecast(

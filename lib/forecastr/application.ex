@@ -10,8 +10,8 @@ defmodule Forecastr.Application do
         id: Forecastr.Cache.Today
       ),
       Supervisor.child_spec(
-        {Forecastr.Cache.Worker, [name: Forecastr.Cache.InFiveDays]},
-        id: Forecastr.Cache.InFiveDays
+        {Forecastr.Cache.Worker, [name: Forecastr.Cache.NextDays]},
+        id: Forecastr.Cache.NextDays
       )
     ]
 
