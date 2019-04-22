@@ -26,8 +26,8 @@ defmodule Forecastr.Renderer.ASCII do
 
   @doc "Render today weather condition"
   @type weather :: map()
-  @type output_type :: :ansi | :png
-  @spec render(weather, output_type) :: :ok | list()
+  @type output_type :: :ansi | :png | :ascii | :html
+  @spec render(weather, output_type) :: list()
   def render(weather, output_type \\ :ascii)
 
   def render(
