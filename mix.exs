@@ -34,7 +34,7 @@ defmodule Forecastr.MixProject do
       {:httpoison, "~> 1.4"},
       {:poison, "~> 3.1"},
       {:elbat, "~> 0.0.6"},
-      {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev},
