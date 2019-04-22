@@ -1,7 +1,7 @@
 defmodule Forecastr.Renderer.ASCII do
   @moduledoc """
   ASCII renderer
-  Render weather ASCII art from the response of Forecastr.OWM
+  Render weather ASCII art
   """
 
   import Forecastr.Renderer.Colours

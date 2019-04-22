@@ -4,10 +4,10 @@ defmodule Forecastr do
 
   The Forecastr user API is exposed in this way:
 
-  # Query the OWM API for today's weather
+  # Query the backend weather API for today's weather
   Forecastr.forecast(:today, query, params \\ %{}, renderer \\ Forecastr.Renderer.ASCII )
 
-  # Query the OWM API for the forecast in the next 5 days
+  # Query the backend weather API for the forecast in the next days
   Forecastr.forecast(:next_days, query, params \\ %{}, renderer \\ Forecastr.Renderer.ASCII )
 
   For example:

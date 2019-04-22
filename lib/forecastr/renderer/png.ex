@@ -3,15 +3,12 @@ defmodule Forecastr.Renderer.PNG do
   PNG renderer
   Render from a list of text to PNG
 
-  Currently the PNG is generated only from the *current* weather forecast coming
-  from the Forecastr.OWM module
-
   The PNG will be written returned as binary buffer.
   """
   import Mogrify
 
   @doc """
-  Render a map coming from the backend (OWM API currently)
+  Render a map coming from the backend
   """
   @spec render(map()) :: map()
   def render(%{"name" => city_name} = map) do

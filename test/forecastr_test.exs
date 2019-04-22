@@ -3,7 +3,7 @@ defmodule ForecastrTest do
 
   @moduletag :capture_log
 
-  defmodule OWMBackendToday do
+  defmodule BackendToday do
     def weather(_when_to_forecast, _city, _params) do
       {:ok, ForecastrTest.today_weather()}
     end
@@ -13,7 +13,7 @@ defmodule ForecastrTest do
     end
   end
 
-  defmodule OWMBackendNextDays do
+  defmodule BackendNextDays do
     def weather(_when_to_forecast, _city, _params) do
       {:ok, ForecastrTest.five_days_weather()}
     end
@@ -23,7 +23,7 @@ defmodule ForecastrTest do
     end
   end
 
-  defmodule OWMBackendError do
+  defmodule BackendError do
     def weather(_when_to_forecast, _city, _params) do
       {:error, :not_found}
     end
@@ -39,25 +39,25 @@ defmodule ForecastrTest do
   end
 
   test "Forecast for a city today" do
-    Application.put_env(:forecastr, :backend, OWMBackendToday)
+    Application.put_env(:forecastr, :backend, BackendToday)
     assert {:ok, response} = Forecastr.forecast(:today, "Wonderland")
     assert Enum.count(response) > 0
   end
 
   test "Forecast for a city returns an error" do
-    Application.put_env(:forecastr, :backend, OWMBackendError)
+    Application.put_env(:forecastr, :backend, BackendError)
     assert {:error, _} = Forecastr.forecast(:today, "Mars")
     assert {:error, _} = Forecastr.forecast(:next_days, "Hale-Bopp")
   end
 
   test "Forecast for a city in 5 days" do
-    Application.put_env(:forecastr, :backend, OWMBackendNextDays)
+    Application.put_env(:forecastr, :backend, BackendNextDays)
     assert {:ok, response} = Forecastr.forecast(:next_days, "Wonderland")
     assert Enum.count(response) > 0
   end
 
   test "Forecastr.forecast cache correctly :today" do
-    Application.put_env(:forecastr, :backend, OWMBackendToday)
+    Application.put_env(:forecastr, :backend, BackendToday)
     assert {:ok, _response} = Forecastr.forecast(:today, "Wonderland")
 
     [state] = :ets.tab2list(Forecastr.Cache.Today)
@@ -66,7 +66,7 @@ defmodule ForecastrTest do
   end
 
   test "Forecastr.forecast cache correctly :next_days" do
-    Application.put_env(:forecastr, :backend, OWMBackendNextDays)
+    Application.put_env(:forecastr, :backend, BackendNextDays)
     assert {:ok, _response} = Forecastr.forecast(:next_days, "Wonderland")
     [state] = :ets.tab2list(Forecastr.Cache.NextDays)
 
