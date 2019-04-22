@@ -13,7 +13,7 @@ defmodule Forecastr.Renderer.PNG do
   @doc """
   Render a map coming from the backend (OWM API currently)
   """
-  @spec render(map()) :: {:ok, map()}
+  @spec render(map()) :: map()
   def render(%{"name" => city_name} = map) do
     map
     |> Forecastr.Renderer.ASCII.render(:png)
@@ -24,7 +24,7 @@ defmodule Forecastr.Renderer.PNG do
   Render a map with the binary of the PNG and the name of the city from an ascii
   and a city name
   """
-  @spec render_png(list(), String.t()) :: {:ok, map()}
+  @spec render_png(list(), String.t()) :: map()
   def render_png(ascii, city_name) when is_list(ascii) do
     city_name = String.downcase(city_name)
     ascii = ["<tt>", ascii, "</tt>"]
@@ -39,7 +39,7 @@ defmodule Forecastr.Renderer.PNG do
       |> custom("stdout", "png:-")
       |> create(buffer: true)
 
-    {:ok, %{name: city_name, binary: image.buffer}}
+    %{name: city_name, binary: image.buffer}
   end
 
   defp prepare_ascii_for_pango(image, ascii) do
