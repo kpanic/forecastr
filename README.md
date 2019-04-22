@@ -58,7 +58,7 @@ Forecastr.forecast(:today, "lima")
 Sample output with the OWM backend (the number of days is different depending on the backend used):
 
 ```elixir
-Forecastr.forecast(:today, "lima")
+Forecastr.forecast(:next_days, "lima")
 ```
 
 ![in 5 days](in_five_days.png)
