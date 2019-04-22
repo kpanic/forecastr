@@ -11,8 +11,8 @@ Aim of the project is to provide a website similar to wttr.in written entirely i
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `forecastr` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `forecastr` to your list of dependencies
+in `mix.exs`:
 
 ```elixir
 def deps do
@@ -22,14 +22,13 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/forecastr](https://hexdocs.pm/forecastr).
+The documentation can be found at
+[https://hexdocs.pm/forecastr](https://hexdocs.pm/forecastr).
 
 
 **NOTE**
 If you want to play with this project you have to obtain an api key from
-http://openweathermap.org/ or https://darksky.net/f and:
+http://openweathermap.org/ or https://darksky.net/ and:
 
 ```bash
 export FORECASTR_API_KEY=YOUR_API_KEY
