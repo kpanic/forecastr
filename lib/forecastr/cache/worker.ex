@@ -6,7 +6,7 @@ defmodule Forecastr.Cache.Worker do
   # Client API
   @spec start_link(Keyword.t()) :: {:ok, pid()}
   def start_link([name: worker_name] = opts) do
-    GenServer.start_link(__MODULE__, %{name: worker_name, timer_ref: nil}, opts)
+    GenServer.start_link(__MODULE__, %{name: worker_name}, opts)
   end
 
   @spec get(atom(), String.t()) :: map() | nil
@@ -39,18 +39,14 @@ defmodule Forecastr.Cache.Worker do
   def handle_call(
         {:set, query, response, options},
         _from,
-        %{name: worker_name, timer_ref: timer_ref} = state
+        %{name: worker_name} = state
       ) do
     true = :ets.insert(worker_name, {query, response})
-    timer_ref = schedule_purge_cache(query, timer_ref, options)
-    {:reply, :ok, %{state | timer_ref: timer_ref}}
+    schedule_purge_cache(query, options)
+    {:reply, :ok, state}
   end
 
-  def schedule_purge_cache(query, nil = _timer_ref, ttl: minutes),
-    do: Process.send_after(self(), {:purge_cache, query}, minutes)
-
-  def schedule_purge_cache(query, timer_ref, ttl: minutes) do
-    Process.cancel_timer(timer_ref)
+  def schedule_purge_cache(query, ttl: minutes) do
     Process.send_after(self(), {:purge_cache, query}, minutes)
   end
 
