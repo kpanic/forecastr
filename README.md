@@ -72,7 +72,8 @@ Forecastr.forecast(:next_days, "lima")
 - [X] Travis
 - [X] JSON renderer
 - [X] PNG Renderer with transparency (it's there but needs some love)
-- [X] Integrate https://forecast.io (now DarkSky) as a backend?
+- [X] Integrate https://forecast.io (now DarkSky) as a backend.
+- [X] Giphy renderer
 - [ ] Tests! (some coverage, good enough for now ™, however if someone feels like to add more.. ;))
 - [ ] Correct ASCII Art for the renderers that supports that (In progress)
 
