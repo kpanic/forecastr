@@ -50,7 +50,7 @@ defmodule Forecastr.Renderer.Giphy do
     forecasts
     |> Enum.group_by(& &1["description"])
     |> Task.async_stream(fn {description, forecasts} ->
-      giphy_pics = Forecastr.Renderer.Giphy.HTTP.search("forecast for #{description}")
+      giphy_pics = Forecastr.Renderer.Giphy.HTTP.search("#{description}")
 
       Enum.map(forecasts, fn forecast ->
         Map.put(forecast, "giphy_pic", Enum.random(giphy_pics))
