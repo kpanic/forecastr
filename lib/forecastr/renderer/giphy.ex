@@ -21,7 +21,7 @@ defmodule Forecastr.Renderer.Giphy do
     def search(keyword) do
       query =
         URI.encode_query(%{
-          q: keyword <> " forecast",
+          q: keyword,
           api_key: @api_key,
           limit: @number_of_gifs_to_dig
         })
