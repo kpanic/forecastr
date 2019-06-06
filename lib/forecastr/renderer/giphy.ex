@@ -14,11 +14,18 @@ defmodule Forecastr.Renderer.Giphy do
   alias __MODULE__
 
   defmodule HTTP do
+    @number_of_gifs_to_dig 50
     @moduledoc false
     @api_key Application.get_env(:forecastr, :giphy_api_key)
 
     def search(keyword) do
-      query = URI.encode_query(%{q: keyword <> " forecast", api_key: @api_key})
+      query =
+        URI.encode_query(%{
+          q: keyword <> " forecast",
+          api_key: @api_key,
+          limit: @number_of_gifs_to_dig
+        })
+
       giphy_url = "https://api.giphy.com/v1/gifs/search?#{query}"
 
       giphy_url
