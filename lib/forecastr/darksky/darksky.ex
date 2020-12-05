@@ -18,6 +18,7 @@ defmodule Forecastr.Darksky do
       query
       |> Forecastr.Darksky.Geocoder.geocode()
       |> Enum.at(0, %{})
+      |> pick_location()
 
     with {:ok, forecast} <- fetch_weather_information(endpoint <> "/#{lat},#{lon}", params) do
       {:ok,
@@ -133,4 +134,12 @@ defmodule Forecastr.Darksky do
   defp convert_to_darksky_params(%{units: :imperial} = params), do: Map.put(params, :units, "us")
   defp convert_to_darksky_params(%{units: _} = params), do: Map.put(params, :units, "si")
   defp convert_to_darksky_params(%{} = params), do: params
+
+  defp pick_location(%{"address" => %{"city" => _city}} = body), do: body
+
+  defp pick_location(%{"address" => %{"town" => town}} = body),
+    do: put_in(body, ["address", "city"], town)
+
+  defp pick_location(%{"address" => %{"village" => village}} = body),
+    do: put_in(body, ["address", "city"], village)
 end
