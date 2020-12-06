@@ -29,10 +29,10 @@ defmodule Forecastr.Darksky do
     end
   end
 
-  @doc """
-  Normalize for today's weather
-  """
   @spec normalize(map()) :: {:ok, map()}
+  @doc """
+  Normalize for today's weather or for the next 3 days weather
+  """
   def normalize(%{
         "when_to_forecast" => "today",
         "name" => name,
@@ -54,9 +54,6 @@ defmodule Forecastr.Darksky do
     {:ok, normalized}
   end
 
-  @doc """
-  Normalize for 3 days weather
-  """
   def normalize(%{
         "when_to_forecast" => "next_days",
         "name" => name,
