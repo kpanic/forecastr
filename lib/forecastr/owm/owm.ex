@@ -9,7 +9,7 @@ defmodule Forecastr.OWM do
   end
 
   @doc """
-  Normalize for today's weather
+  Normalize for today's weather or for the next 5 days weather
   """
   @spec normalize(map()) :: {:ok, map()}
   def normalize(%{
@@ -32,9 +32,6 @@ defmodule Forecastr.OWM do
     {:ok, normalized}
   end
 
-  @doc """
-  Normalize for 5 days weather
-  """
   def normalize(%{
         "city" => %{
           "name" => name,

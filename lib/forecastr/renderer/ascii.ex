@@ -24,10 +24,10 @@ defmodule Forecastr.Renderer.ASCII do
     7 => "Sun"
   }
 
-  @doc "Render today weather condition"
   @type weather :: map()
   @type output_type :: :ansi | :png | :ascii | :html
   @spec render(weather, output_type) :: list()
+  @doc "Render today weather condition or five days weather condition"
   def render(weather, output_type \\ :ascii)
 
   def render(
@@ -66,7 +66,6 @@ defmodule Forecastr.Renderer.ASCII do
     ]
   end
 
-  @doc "Render five days weather condition"
   def render(
         %{
           "name" => name,
