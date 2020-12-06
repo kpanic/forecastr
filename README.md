@@ -7,7 +7,7 @@ Forecastr is an Elixir flavour of http://wttr.in that talks directly to one of
 the aforementioned weather services.
 Aim of the project is to provide a website similar to wttr.in written entirely in elixir
 
-**Project status: initial. (very alphaish)**
+**Project status: beta**
 
 ## Installation
 
@@ -67,6 +67,28 @@ Forecastr.forecast(:next_days, "lima")
 > Fal de ral de ral do*" (Lemon Jelly cit.)
 
 ![duck with sunglasses](duck_with_sunglasses.jpg)
+
+If you want *gifs* back with your weather forecast from **Giphy** call the giphy
+renderer:
+
+```elixir
+iex> Forecastr.forecast(:today, "berlin", %{units: :metric}, Forecastr.Renderer.Giphy)
+{:ok,
+ %{
+   "coordinates" => %{"lat" => 52.5170365, "lon" => 13.3888599},
+   "country" => "Deutschland",
+   "description" => "Mostly Cloudy",
+   "giphy_pic" => "https://i.giphy.com/media/XqL0uC2RUx9Hq/200.gif",
+   "id" => "partly-cloudy-day",
+   "name" => "Berlin",
+   "temp" => 9.77,
+   "temp_max" => 9.77,
+   "temp_min" => 9.77
+ }}
+```
+
+This works also by calling `Forecastr.forecast` with the `:next_days` atom to
+get the weather forecast for the next days.
 
 # TODO
 - [X] Travis
