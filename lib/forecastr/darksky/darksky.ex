@@ -142,4 +142,7 @@ defmodule Forecastr.Darksky do
 
   defp pick_location(%{"address" => %{"province" => province}} = body),
     do: put_in(body, ["address", "city"], province)
+
+  defp pick_location(%{"address" => %{"suburb" => suburb}} = body),
+    do: put_in(body, ["address", "city"], suburb)
 end
