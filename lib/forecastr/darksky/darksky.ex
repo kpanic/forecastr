@@ -74,10 +74,10 @@ defmodule Forecastr.Darksky do
   end
 
   defp fetch_weather_information(endpoint, opts) do
-    with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
-           HTTPoison.get(endpoint, [], params: opts) do
-      {:ok, Poison.decode!(body)}
-    else
+    case HTTPoison.get(endpoint, [], params: opts) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        {:ok, Poison.decode!(body)}
+
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         {:error, :not_found}
 

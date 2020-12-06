@@ -1,13 +1,14 @@
 defmodule Forecastr.Renderer.Giphy.HTTP do
   @number_of_gifs_to_dig 50
   @moduledoc false
-  @api_key Application.get_env(:forecastr, :giphy_api_key)
 
   def search(keyword) do
+    api_key = Application.get_env(:forecastr, :giphy_api_key)
+
     query =
       URI.encode_query(%{
         q: keyword,
-        api_key: @api_key,
+        api_key: api_key,
         limit: @number_of_gifs_to_dig
       })
 
