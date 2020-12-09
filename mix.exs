@@ -17,8 +17,7 @@ defmodule Forecastr.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
-      elixirc_paths: elixirc_paths(Mix.env()),
-      dialyzer: [plt_file: {:no_warn, ".dialyzer/local.plt"}]
+      elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
 
