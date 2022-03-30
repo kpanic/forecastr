@@ -4,7 +4,7 @@ defmodule Forecastr.MixProject do
   def project do
     [
       app: :forecastr,
-      version: "0.2.6",
+      version: "0.2.7",
       elixir: "~> 1.7",
       description: description(),
       package: package(),
@@ -62,7 +62,7 @@ defmodule Forecastr.MixProject do
         "README.md"
       ],
       maintainers: ["Marco Milanesi"],
-      licenses: ["Apache 2.0"],
+      licenses: ["Apache-2.0"],
       links: %{
         "GitHub" => "https://github.com/kpanic/forecastr",
         "Contributors" => "https://github.com/kpanic/forecastr/graphs/contributors",
