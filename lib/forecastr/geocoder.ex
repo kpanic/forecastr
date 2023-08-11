@@ -1,4 +1,4 @@
-defmodule Forecastr.Darksky.Geocoder do
+defmodule Forecastr.Geocoder do
   @moduledoc false
 
   @endpoint "https://nominatim.openstreetmap.org"
@@ -7,8 +7,11 @@ defmodule Forecastr.Darksky.Geocoder do
   def geocode(address, additional_params \\ []) do
     default_params = [q: address, format: @format, addressdetails: 1]
 
-    geocode_with_osm("/search", default_params ++ additional_params)
+    "/search"
+    |> geocode_with_osm(default_params ++ additional_params)
     |> parse_request()
+    |> Enum.at(0, %{})
+    |> put_location()
   end
 
   defp parse_request(%HTTPoison.Response{body: body}) do
@@ -19,4 +22,7 @@ defmodule Forecastr.Darksky.Geocoder do
     params = Enum.into(params, %{})
     HTTPoison.get!(@endpoint <> path, [], params: params)
   end
+
+  defp put_location(%{"display_name" => location} = body),
+    do: put_in(body, ["address", "city"], location)
 end
