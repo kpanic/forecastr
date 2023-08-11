@@ -6,9 +6,9 @@ defmodule Forecastr.Renderer.ANSI do
   ANSI escape sequences
   """
 
-  @spec render(map()) :: list()
-  def render(map) do
+  @spec render(map(), units :: atom()) :: list()
+  def render(map, units) do
     map
-    |> Forecastr.Renderer.ASCII.render(:ansi)
+    |> Forecastr.Renderer.ASCII.render(:ansi, units)
   end
 end

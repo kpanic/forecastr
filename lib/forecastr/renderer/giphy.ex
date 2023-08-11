@@ -13,12 +13,12 @@ defmodule Forecastr.Renderer.Giphy do
 
   alias __MODULE__
 
-  @spec render(map()) :: map()
-  def render(%{"description" => description} = map) do
+  @spec render(map(), units :: atom()) :: map()
+  def render(%{"description" => description} = map, units) do
     Map.put(map, "giphy_pic", Enum.random(Giphy.HTTP.search(description)))
   end
 
-  def render(%{"list" => forecasts} = map) do
+  def render(%{"list" => forecasts} = map, units) do
     %{map | "list" => giphy(forecasts)}
   end
 

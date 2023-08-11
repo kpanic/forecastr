@@ -6,9 +6,9 @@ defmodule Forecastr.Renderer.HTML do
   HTML
   """
 
-  @spec render(map()) :: list()
-  def render(map) do
+  @spec render(map(), units :: atom()) :: list()
+  def render(map, units) do
     map
-    |> Forecastr.Renderer.ASCII.render(:html)
+    |> Forecastr.Renderer.ASCII.render(:html, units)
   end
 end

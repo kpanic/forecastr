@@ -26,9 +26,9 @@ defmodule Forecastr.Renderer.ASCII do
 
   @type weather :: map()
   @type output_type :: :ansi | :png | :ascii | :html
-  @spec render(weather, output_type) :: list()
+  @spec render(weather, output_type, units :: atom()) :: list()
   @doc "Render today weather condition or five days weather condition"
-  def render(weather, output_type \\ :ascii)
+  def render(weather, output_type \\ :ascii, units)
 
   def render(
         %{
@@ -41,7 +41,8 @@ defmodule Forecastr.Renderer.ASCII do
           "id" => weather_id,
           "description" => main_weather_condition
         },
-        output_type
+        output_type,
+        units
       ) do
     weather_codes = get_weather_codes_for_backend(Application.get_env(:forecastr, :backend))
     weather_code = Map.get(weather_codes, weather_id, :codeunknown)
@@ -56,7 +57,7 @@ defmodule Forecastr.Renderer.ASCII do
       |> ascii_for(output_type)
       |> String.split("\n")
       |> append_reset_colours(output_type)
-      |> append_weather_info(bare_ascii, main_weather_condition, temp, temp_max, temp_min)
+      |> append_weather_info(bare_ascii, main_weather_condition, temp, temp_max, temp_min, units)
 
     [
       ~s(Weather report: #{name}, #{country}\n),
@@ -73,14 +74,15 @@ defmodule Forecastr.Renderer.ASCII do
           "coordinates" => %{"lat" => lat, "lon" => lon},
           "list" => forecast_list
         },
-        output_type
+        output_type,
+        units
       )
       when is_list(forecast_list) do
     forecasts =
       forecast_list
       |> extract_relevant_times()
       |> group_by_date()
-      |> prepare_forecasts_for_rendering(output_type)
+      |> prepare_forecasts_for_rendering(output_type, units)
 
     # TODO: align correctly tabular output when we have different ASCII art
     # shapes
@@ -118,14 +120,16 @@ defmodule Forecastr.Renderer.ASCII do
         description,
         temperature,
         temp_max,
-        temp_min
+        temp_min,
+        units
       ) do
+    units = determine_unit(units)
     # The weather information to append to the ASCII art
     weather_info = [
       "#{description}     ",
-      "#{temperature} °C  ",
-      "max: #{temp_max} °C",
-      "min: #{temp_min} °C"
+      "#{temperature} #{units}  ",
+      "max: #{temp_max} #{units}",
+      "min: #{temp_min} #{units}"
     ]
 
     weather_length = Enum.count(weather_info)
@@ -373,7 +377,7 @@ defmodule Forecastr.Renderer.ASCII do
     end)
   end
 
-  defp prepare_forecasts_for_rendering(forecasts, output_type) do
+  defp prepare_forecasts_for_rendering(forecasts, output_type, units) do
     forecasts
     |> Enum.map(fn {date, forecasts} ->
       day =
@@ -410,7 +414,14 @@ defmodule Forecastr.Renderer.ASCII do
             |> ascii_for(output_type)
             |> String.split("\n")
             |> append_reset_colours(output_type)
-            |> append_weather_info(bare_ascii, main_weather_condition, temp, temp_max, temp_min)
+            |> append_weather_info(
+              bare_ascii,
+              main_weather_condition,
+              temp,
+              temp_max,
+              temp_min,
+              units
+            )
 
           ["#{period_of_the_day} [#{time}]\n" <> ascii | acc]
         end)
@@ -449,21 +460,6 @@ defmodule Forecastr.Renderer.ASCII do
   def table(data, :ansi), do: Elbat.table(data, :unicode)
   def table(data, :html), do: Elbat.table(data, :unicode)
   def table(data, _), do: data
-
-  # NOTE: this is a reduced set compared to OWM
-  def get_weather_codes_for_backend(Forecastr.Darksky) do
-    %{
-      "clear-day" => :codesunny,
-      "clear-night" => :codesunny,
-      "cloudy" => :codecloudy,
-      "fog" => :codefog,
-      "partly-cloudy-day" => :codepartlycloudy,
-      "partly-cloudy-night" => :codepartlycloudy,
-      "rain" => :codeheavyrain,
-      "sleet" => :codelightsleet,
-      "snow" => :codelightsnow
-    }
-  end
 
   def get_weather_codes_for_backend(_) do
     %{
@@ -567,4 +563,7 @@ defmodule Forecastr.Renderer.ASCII do
       962 => :codeunknown
     }
   end
+
+  defp determine_unit(:metric), do: "°C"
+  defp determine_unit(:imperial), do: "°F"
 end

@@ -10,10 +10,10 @@ defmodule Forecastr.Renderer.PNG do
   @doc """
   Render a map coming from the backend
   """
-  @spec render(map()) :: map()
-  def render(%{"name" => city_name} = map) do
+  @spec render(map(), units :: atom()) :: map()
+  def render(%{"name" => city_name} = map, units) do
     map
-    |> Forecastr.Renderer.ASCII.render(:png)
+    |> Forecastr.Renderer.ASCII.render(:png, units)
     |> render_png(city_name)
   end
 
