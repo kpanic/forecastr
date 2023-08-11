@@ -3,8 +3,8 @@ defmodule Forecastr.Renderer.JSON do
   JSON "renderer".
   """
 
-  @spec render(map()) :: map()
-  def render(forecast) do
+  @spec render(map(), units :: atom()) :: map()
+  def render(forecast, _units) do
     forecast
   end
 end

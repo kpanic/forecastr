@@ -44,9 +44,10 @@ defmodule Forecastr do
   def forecast(when_to_forecast, query, params) do
     location = String.downcase(query)
     renderer = Keyword.get(params, :renderer, Forecastr.Renderer.ASCII)
+    units = Keyword.get(params, :units, :metric)
 
     with {:ok, response} <- perform_query(location, when_to_forecast, params) do
-      {:ok, renderer.render(response)}
+      {:ok, renderer.render(response, units)}
     end
   end
 
