@@ -7,8 +7,5 @@ defmodule Forecastr.Renderer.ANSI do
   """
 
   @spec render(map(), units :: atom()) :: list()
-  def render(map, units) do
-    map
-    |> Forecastr.Renderer.ASCII.render(:ansi, units)
-  end
+  def render(map, units), do: Forecastr.Renderer.ASCII.render(map, :ansi, units)
 end
