@@ -2,7 +2,7 @@ defmodule Forecastr.OWM.HTTPTest do
   use ExUnit.Case
 
   test "process_url prepend http://" do
-    assert "http://sorry-i-am-late.at" ==
+    assert "https://sorry-i-am-late.at" ==
              Forecastr.OWM.HTTP.process_request_url("sorry-i-am-late.at")
   end
 
