@@ -2,7 +2,8 @@ defmodule Forecastr.OWM do
   @moduledoc false
 
   @type when_to_forecast :: :today | :next_days
-  @spec weather(when_to_forecast, String.t(), map()) :: {:ok, map()} | {:error, atom()}
+  @spec weather(when_to_forecast, query :: String.t(), opts :: Keyword.t()) ::
+          {:ok, map()} | {:error, atom()}
   def weather(when_to_forecast, query, opts) do
     endpoint = owm_api_endpoint(when_to_forecast)
 
@@ -72,7 +73,13 @@ defmodule Forecastr.OWM do
   end
 
   defp fetch_weather_information(endpoint, opts) do
-    case Forecastr.OWM.HTTP.get(endpoint, [], params: opts) do
+    params =
+      opts
+      |> Keyword.take([:units])
+      |> Enum.into(%{})
+      |> Map.put_new(:units, :metric)
+
+    case Forecastr.OWM.HTTP.get(endpoint, [], params: params) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, Poison.decode!(body)}
 

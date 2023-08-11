@@ -5,20 +5,25 @@ defmodule Forecastr do
   The Forecastr user API is exposed in this way:
 
   # Query the backend weather API for today's weather
-  Forecastr.forecast(:today, query, params \\ %{}, renderer \\ Forecastr.Renderer.ASCII )
+  Forecastr.forecast(:today, query, renderer: Forecastr.Renderer.ASCII )
 
   # Query the backend weather API for the forecast in the next days
-  Forecastr.forecast(:next_days, query, params \\ %{}, renderer \\ Forecastr.Renderer.ASCII )
+  Forecastr.forecast(:next_days, query, renderer: Forecastr.Renderer.ASCII )
 
   For example:
 
   Forecastr.forecast(:today, "Berlin")
 
-  Forecastr.forecast(:next_days, "Berlin", %{units: :imperial})
+  Forecastr.forecast(:next_days, "Berlin", units: :imperial)
 
-  Forecastr.forecast(:today, "Lima", %{units: :imperial}, Forecastr.Renderer.PNG)
+  Forecastr.forecast(:today, "Lima", units: :imperial, renderer: Forecastr.Renderer.PNG)
   """
 
+  @doc """
+  Forecastr.forecast(:today, "Berlin")
+
+  Forecastr.forecast(:today, "Mexico city", renderer: Forecastr.Renderer.ANSI)
+  """
   @type renderer ::
           Forecastr.Renderer.ASCII
           | Forecastr.Renderer.ANSI
@@ -26,19 +31,19 @@ defmodule Forecastr do
           | Forecastr.Renderer.JSON
           | Forecastr.Renderer.PNG
   @type when_to_forecast :: :today | :next_days
-  @spec forecast(when_to_forecast, query :: String.t(), params :: map(), renderer) ::
+  @spec forecast(when_to_forecast, query :: String.t(), params :: Keyword.t()) ::
           {:ok, binary()} | {:ok, list(binary())} | {:error, atom()}
   def forecast(
         when_to_forecast,
         query,
-        params \\ %{units: :metric},
-        renderer \\ Forecastr.Renderer.ASCII
+        params \\ [units: :metric]
       )
 
-  def forecast(_when_to_forecast, "", _params, _renderer), do: {:error, :not_found}
+  def forecast(_when_to_forecast, "", _params), do: {:error, :not_found}
 
-  def forecast(when_to_forecast, query, params, renderer) do
+  def forecast(when_to_forecast, query, params) do
     location = String.downcase(query)
+    renderer = Keyword.get(params, :renderer, Forecastr.Renderer.ASCII)
 
     with {:ok, response} <- perform_query(location, when_to_forecast, params) do
       {:ok, renderer.render(response)}

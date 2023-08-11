@@ -17,7 +17,7 @@ in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:forecastr, "~> 0.2"}
+    {:forecastr, "~> 0.3"}
   ]
 end
 ```
@@ -72,7 +72,7 @@ If you want *gifs* back with your weather forecast from **Giphy** call the giphy
 renderer:
 
 ```elixir
-iex> Forecastr.forecast(:today, "berlin", %{units: :metric}, Forecastr.Renderer.Giphy)
+iex> Forecastr.forecast(:today, "berlin", units: :metric, renderer: Forecastr.Renderer.Giphy)
 {:ok,
  %{
    "coordinates" => %{"lat" => 52.5170365, "lon" => 13.3888599},
