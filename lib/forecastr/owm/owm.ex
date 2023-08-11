@@ -5,7 +5,27 @@ defmodule Forecastr.OWM do
   @spec weather(when_to_forecast, String.t(), map()) :: {:ok, map()} | {:error, atom()}
   def weather(when_to_forecast, query, opts) do
     endpoint = owm_api_endpoint(when_to_forecast)
-    fetch_weather_information(endpoint <> "?q=#{query}", opts)
+
+    %{
+      "lat" => lat,
+      "lon" => lon,
+      "address" => %{
+        "city" => city,
+        "country" => country
+      }
+    } = Forecastr.Geocoder.geocode(query)
+
+    case fetch_weather_information(endpoint <> "?lat=#{lat}&lon=#{lon}", opts) do
+      {:ok, body} ->
+        {:ok,
+         body
+         |> Map.put("name", city)
+         |> Map.put("country", country)
+         |> Map.put("when_to_forecast", Atom.to_string(when_to_forecast))}
+
+      {:error, _error} = error ->
+        error
+    end
   end
 
   @doc """

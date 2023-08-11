@@ -3,7 +3,7 @@ defmodule Forecastr.OWM.HTTP do
 
   use HTTPoison.Base
 
-  def process_request_url(url), do: "http://" <> url
+  def process_request_url(url), do: "https://" <> url
 
   def process_request_options(options),
     do:
