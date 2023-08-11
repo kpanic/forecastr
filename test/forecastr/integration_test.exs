@@ -12,7 +12,13 @@ defmodule Forecastr.IntegrationTest do
       ExVCR.Config.filter_url_params(true)
       ExVCR.Config.filter_request_headers("X-Cache-Key")
 
+      original_backend = Application.get_env(:forecastr, :backend)
       Application.put_env(:forecastr, :backend, Forecastr.OWM)
+
+      on_exit(fn ->
+        Application.put_env(:forecastr, :backend, original_backend)
+      end)
+
       :ok
     end
 

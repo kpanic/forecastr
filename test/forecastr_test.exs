@@ -38,39 +38,62 @@ defmodule ForecastrTest do
     assert {:error, :not_found} = Forecastr.forecast(:next_days, "")
   end
 
-  test "Forecast for a city today" do
-    Application.put_env(:forecastr, :backend, BackendToday)
-    assert {:ok, response} = Forecastr.forecast(:today, "Wonderland")
-    assert Enum.count(response) > 0
+  describe "forecast for today" do
+    setup do
+      original_backend = Application.get_env(:forecastr, :backend)
+      Application.put_env(:forecastr, :backend, BackendToday)
+
+      on_exit(fn ->
+        Application.put_env(:forecastr, :backend, original_backend)
+      end)
+    end
+
+    test "city" do
+      assert {:ok, response} = Forecastr.forecast(:today, "Wonderland")
+      assert Enum.count(response) > 0
+    end
+
+    test "cache correctly :today" do
+      assert {:ok, _response} = Forecastr.forecast(:today, "Wonderland")
+
+      [state] = :ets.tab2list(Forecastr.Cache.Today)
+
+      assert {"wonderland", today_weather()} == state
+    end
+  end
+
+  describe "forecast next days" do
+    setup do
+      original_backend = Application.get_env(:forecastr, :backend)
+      Application.put_env(:forecastr, :backend, BackendNextDays)
+
+      on_exit(fn ->
+        Application.put_env(:forecastr, :backend, original_backend)
+      end)
+    end
+
+    test "Forecast for a city in 5 days" do
+      assert {:ok, response} = Forecastr.forecast(:next_days, "Wonderland")
+      assert Enum.count(response) > 0
+    end
+
+    test "Forecastr.forecast cache correctly :next_days" do
+      assert {:ok, _response} = Forecastr.forecast(:next_days, "Wonderland")
+      [state] = :ets.tab2list(Forecastr.Cache.NextDays)
+
+      assert {"wonderland", five_days_weather()} == state
+    end
   end
 
   test "Forecast for a city returns an error" do
+    original_backend = Application.get_env(:forecastr, :backend)
     Application.put_env(:forecastr, :backend, BackendError)
     assert {:error, _} = Forecastr.forecast(:today, "Mars")
     assert {:error, _} = Forecastr.forecast(:next_days, "Hale-Bopp")
-  end
 
-  test "Forecast for a city in 5 days" do
-    Application.put_env(:forecastr, :backend, BackendNextDays)
-    assert {:ok, response} = Forecastr.forecast(:next_days, "Wonderland")
-    assert Enum.count(response) > 0
-  end
-
-  test "Forecastr.forecast cache correctly :today" do
-    Application.put_env(:forecastr, :backend, BackendToday)
-    assert {:ok, _response} = Forecastr.forecast(:today, "Wonderland")
-
-    [state] = :ets.tab2list(Forecastr.Cache.Today)
-
-    assert {"wonderland", today_weather()} == state
-  end
-
-  test "Forecastr.forecast cache correctly :next_days" do
-    Application.put_env(:forecastr, :backend, BackendNextDays)
-    assert {:ok, _response} = Forecastr.forecast(:next_days, "Wonderland")
-    [state] = :ets.tab2list(Forecastr.Cache.NextDays)
-
-    assert {"wonderland", five_days_weather()} == state
+    on_exit(fn ->
+      Application.put_env(:forecastr, :backend, original_backend)
+    end)
   end
 
   test "Forecastr.forecast hits the cache when it's pre-warmed for today" do
