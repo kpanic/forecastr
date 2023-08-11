@@ -11,7 +11,7 @@ defmodule Forecastr.IntegrationTest do
     setup do
       ExVCR.Config.filter_url_params(true)
       ExVCR.Config.filter_request_headers("X-Cache-Key")
-      
+
       Application.put_env(:forecastr, :backend, Forecastr.OWM)
       :ok
     end
@@ -39,7 +39,10 @@ defmodule Forecastr.IntegrationTest do
                   "list" => forecasts,
                   # The OWM API returns this place in Berlin instead of Berlin 🤷
                   "name" => "Alt-Kölln"
-                }} = Forecastr.forecast(:next_days, "Berlin, Germany", renderer: Forecastr.Renderer.JSON)
+                }} =
+                 Forecastr.forecast(:next_days, "Berlin, Germany",
+                   renderer: Forecastr.Renderer.JSON
+                 )
 
         assert is_list(forecasts)
       end
