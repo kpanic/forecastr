@@ -11,6 +11,8 @@ defmodule Forecastr.IntegrationTest do
     setup do
       ExVCR.Config.filter_url_params(true)
       ExVCR.Config.filter_request_headers("X-Cache-Key")
+      
+      Application.put_env(:forecastr, :backend, Forecastr.OWM)
       :ok
     end
 
@@ -21,7 +23,7 @@ defmodule Forecastr.IntegrationTest do
                   "coordinates" => %{"lat" => 52.517, "lon" => 13.3889},
                   "country" => "DE",
                   "description" => _,
-                  "id" => 802,
+                  "id" => 801,
                   "name" => "Berlin, Deutschland",
                   "temp" => _,
                   "temp_max" => _,
