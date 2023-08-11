@@ -38,7 +38,8 @@ defmodule Forecastr.MixProject do
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:ex_doc, ">= 0.0.0", only: :dev},
-      {:mogrify, "~> 0.7"}
+      {:mogrify, "~> 0.7"},
+      {:exvcr, "~> 0.11", only: :test}
     ]
   end
 

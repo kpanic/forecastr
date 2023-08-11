@@ -25,4 +25,6 @@ defmodule Forecastr.Geocoder do
 
   defp put_location(%{"display_name" => location} = body),
     do: put_in(body, ["address", "city"], location)
+
+  defp put_location(body), do: body
 end

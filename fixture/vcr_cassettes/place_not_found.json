@@ -1,0 +1,26 @@
+[
+  {
+    "request": {
+      "body": "",
+      "headers": [],
+      "method": "get",
+      "options": [],
+      "request_body": "",
+      "url": "https://nominatim.openstreetmap.org/search"
+    },
+    "response": {
+      "binary": false,
+      "body": "[]",
+      "headers": {
+        "Server": "nginx",
+        "Date": "Fri, 11 Aug 2023 12:04:06 GMT",
+        "Content-Type": "application/json",
+        "Content-Length": "2",
+        "Connection": "keep-alive",
+        "Keep-Alive": "timeout=20"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]
