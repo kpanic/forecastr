@@ -21,7 +21,7 @@ defmodule Forecastr.IntegrationTest do
                   "coordinates" => %{"lat" => 52.517, "lon" => 13.3889},
                   "country" => "DE",
                   "description" => _,
-                  "id" => 802,
+                  "id" => 801,
                   "name" => "Berlin, Deutschland",
                   "temp" => _,
                   "temp_max" => _,
