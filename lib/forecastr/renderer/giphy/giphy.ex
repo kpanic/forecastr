@@ -14,14 +14,18 @@ defmodule Forecastr.Renderer.Giphy do
   alias __MODULE__
 
   @spec render(map(), units :: atom()) :: map()
-  def render(%{"description" => description} = map, units) do
-    Map.put(map, "giphy_pic", case Giphy.HTTP.search(description) do
-      gifs when is_list(gifs) and gifs !=[] -> Enum.random(gifs)
-      _ -> nil
-    end)
+  def render(%{"description" => description} = map, _units) do
+    Map.put(
+      map,
+      "giphy_pic",
+      case Giphy.HTTP.search(description) do
+        gifs when is_list(gifs) and gifs != [] -> Enum.random(gifs)
+        _ -> nil
+      end
+    )
   end
 
-  def render(%{"list" => forecasts} = map, units) do
+  def render(%{"list" => forecasts} = map, _units) do
     %{map | "list" => giphy(forecasts)}
   end
 

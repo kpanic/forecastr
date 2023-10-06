@@ -7,30 +7,32 @@ defmodule Forecastr.PirateWeather do
   @spec weather(when_to_forecast, String.t(), map()) :: {:ok, map()} | {:error, atom()}
   def weather(when_to_forecast, query, opts) do
     case api_endpoint(when_to_forecast) do
-      nil -> {:error, :no_api_key}
+      nil ->
+        {:error, :no_api_key}
+
       endpoint ->
-    params = convert_params(opts)
+        params = convert_params(opts)
 
-    %{
-      "lat" => lat,
-      "lon" => lon,
-      "address" => %{
-        "city" => city,
-        "country" => country
-      }
-    } =
-      query
-      |> Geocoder.geocode()
-      |> pick_location()
+        %{
+          "lat" => lat,
+          "lon" => lon,
+          "address" => %{
+            "city" => city,
+            "country" => country
+          }
+        } =
+          query
+          |> Geocoder.geocode()
+          |> pick_location()
 
-    with {:ok, forecast} <- fetch_weather_information(endpoint <> "/#{lat},#{lon}", params) do
-      {:ok,
-       forecast
-       |> add("name", city)
-       |> add("country", country)
-       |> add("when_to_forecast", Atom.to_string(when_to_forecast))}
+        with {:ok, forecast} <- fetch_weather_information(endpoint <> "/#{lat},#{lon}", params) do
+          {:ok,
+           forecast
+           |> add("name", city)
+           |> add("country", country)
+           |> add("when_to_forecast", Atom.to_string(when_to_forecast))}
+        end
     end
-  end
   end
 
   @spec normalize(map()) :: {:ok, map()}
@@ -80,7 +82,7 @@ defmodule Forecastr.PirateWeather do
   defp fetch_weather_information(endpoint, opts) do
     case HTTPoison.get(endpoint, [], params: opts) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        {:ok, Poison.decode!(body)}
+        {:ok, Jason.decode!(body)}
 
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         {:error, :not_found}
@@ -128,10 +130,12 @@ defmodule Forecastr.PirateWeather do
   @spec api_endpoint(when_to_forecast) :: String.t()
   def api_endpoint(_) do
     case Application.get_env(:forecastr, :appid) do
-      appid when is_binary(appid) and appid !="" ->
-    "https://api.pirateweather.net/forecast/#{appid}"
-    _ -> nil
-      end
+      appid when is_binary(appid) and appid != "" ->
+        "https://api.pirateweather.net/forecast/#{appid}"
+
+      _ ->
+        nil
+    end
   end
 
   defp convert_params(%{units: :imperial} = params), do: Map.put(params, :units, "us")
@@ -153,6 +157,5 @@ defmodule Forecastr.PirateWeather do
   defp pick_location(%{"address" => %{"suburb" => suburb}} = body),
     do: put_in(body, ["address", "city"], suburb)
 
-  defp pick_location({"address", address} = body), do: %{"address" => address} |> pick_location()
-
+  defp pick_location({"address", address}), do: %{"address" => address} |> pick_location()
 end

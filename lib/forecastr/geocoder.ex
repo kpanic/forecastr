@@ -15,7 +15,7 @@ defmodule Forecastr.Geocoder do
   end
 
   defp parse_request(%HTTPoison.Response{body: body}) do
-    Poison.decode!(body)
+    Jason.decode!(body)
   end
 
   defp geocode_with_osm(path, params) do

@@ -32,7 +32,7 @@ defmodule Forecastr.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.4"},
-      {:poison, "~> 5.0"},
+      {:jason, "~> 1.4"},
       {:elbat, "~> 0.0.6"},
       {:dialyxir, "~> 1.3.0", only: [:dev], runtime: false},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},

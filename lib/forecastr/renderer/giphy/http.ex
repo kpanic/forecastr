@@ -17,7 +17,7 @@ defmodule Forecastr.Renderer.Giphy.HTTP do
     giphy_url
     |> HTTPoison.get!()
     |> Map.get(:body)
-    |> Poison.decode!()
+    |> Jason.decode!()
     |> extract_gif_urls()
   end
 
