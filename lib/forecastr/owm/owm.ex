@@ -82,7 +82,7 @@ defmodule Forecastr.OWM do
 
     case Forecastr.OWM.HTTP.get(endpoint, [], params: params) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        {:ok, Poison.decode!(body)}
+        {:ok, Jason.decode!(body)}
 
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         {:error, :not_found}

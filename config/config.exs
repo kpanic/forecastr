@@ -1,4 +1,4 @@
-import Mix.Config
+import Config
 
 config :forecastr,
   appid: System.get_env("FORECASTR_API_KEY"),
