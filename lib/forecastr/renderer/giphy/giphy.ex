@@ -15,7 +15,10 @@ defmodule Forecastr.Renderer.Giphy do
 
   @spec render(map(), units :: atom()) :: map()
   def render(%{"description" => description} = map, units) do
-    Map.put(map, "giphy_pic", Enum.random(Giphy.HTTP.search(description)))
+    Map.put(map, "giphy_pic", case Giphy.HTTP.search(description) do
+      gifs when is_list(gifs) and gifs !=[] -> Enum.random(gifs)
+      _ -> nil
+    end)
   end
 
   def render(%{"list" => forecasts} = map, units) do
